@@ -594,18 +594,18 @@ MonoBehaviour:
   Decimatation: 0.065
   LightmapPadding: 0.2
   Points:
-  - {x: 0.4593134, y: 3.4378948, z: -2.1409147}
-  - {x: -2.008029, y: 3.1387043, z: -0.9197135}
-  - {x: -3.267504, y: 1.9460387, z: 1.013361}
-  - {x: -1.4296058, y: 2.0125496, z: -0.23681602}
-  - {x: 0.9355751, y: 1.8940958, z: 1.7886295}
-  - {x: 1.322246, y: 1.7584367, z: -0.57644856}
+  - {x: 1.0892565, y: 1.8294661, z: -0.58092076}
+  - {x: -1.1975558, y: 1.8809311, z: -1.0925437}
+  - {x: -2.4261215, y: 1.9460387, z: 0.8254795}
+  - {x: -1.0215176, y: 2.0125496, z: 2.4571993}
+  - {x: 1.1147794, y: 1.8940958, z: 1.8309911}
+  - {x: 1.0919571, y: 1.8294938, z: -0.5884912}
   Sags:
-  - -2.8275747
-  - -2.9860716
-  - -1.2664808
-  - -1.5606623
-  - -1.8605345
+  - -2.172193
+  - -2.4138472
+  - -2.4048724
+  - -2.2008216
+  - -2.3144493
   Lamp: {fileID: 2534964839176971238, guid: ebf5011284072ac4ca5ce75281e1bb93, type: 3}
   LampScale: 1
   LampSpacing: 0.14
@@ -623,7 +623,7 @@ Transform:
   m_GameObject: {fileID: 803080230}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.38, y: 0, z: -0.51}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -831,6 +831,49 @@ MonoBehaviour:
   lmgroupAsset: {fileID: 11400000, guid: 19af82ffc3809b24b840abcf452fc06c, type: 2}
   instanceResolutionOverride: 0
   instanceResolution: 256
+--- !u!114 &1890439477
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec0b4dd729a12d046982652f834580a2, type: 3}
+  m_Name: SampleScene_LM0
+  m_EditorClassIdentifier: 
+  resolution: 128
+  bitmask: 1
+  id: 1
+  sortingID: 1
+  isImplicit: 1
+  area: 28.035257
+  totalVertexCount: 0
+  vertexCounter: 0
+  sceneLodLevel: -1
+  autoResolution: 0
+  sceneName: 
+  tag: -1
+  containsTerrains: 0
+  probes: 0
+  mode: 1
+  renderMode: 1000
+  renderDirMode: 1000
+  atlasPacker: 1000
+  computeSSS: 0
+  sssSamples: 16
+  sssDensity: 10
+  sssColor: {r: 1, g: 1, b: 1, a: 1}
+  sssScale: 1
+  fakeShadowBias: 0
+  transparentSelfShadow: 0
+  flipNormal: 0
+  parentName: 
+  overridePath: 
+  fixPos3D: 0
+  voxelSize: {x: 1, y: 1, z: 1}
+  passedFilter: 0
 --- !u!1 &1924355039
 GameObject:
   m_ObjectHideFlags: 1
@@ -938,7 +981,7 @@ MonoBehaviour:
   renderSettingsRTPVHDR: 0
   renderSettingsRTPVWidth: 640
   renderSettingsRTPVHeight: 360
-  lastBakeTime: 8
+  lastBakeTime: 11
   enlightenWarningShown: 0
   enlightenWarningShown2: 0
   uniqueLights:
@@ -975,12 +1018,16 @@ MonoBehaviour:
     cookie: {fileID: 0}
     angle: 30
     UID: 1
-  implicitGroups: []
-  implicitGroupedObjects: []
+  implicitGroups:
+  - {fileID: 1890439477}
+  implicitGroupedObjects:
+  - {fileID: 803080230}
   bounds:
-  - m_Center: {x: 0, y: 1.7029836, z: 0}
-    m_Extent: {x: 5, y: 1.7359836, z: 5}
-  hasEmissive: 01
+  - m_Center: {x: 0, y: 0.467, z: 0}
+    m_Extent: {x: 5, y: 0.5, z: 5}
+  - m_Center: {x: -0.24788016, y: 1.4674156, z: 0.17208719}
+    m_Extent: {x: 1.8159137, y: 0.54712796, z: 1.8496332}
+  hasEmissive: 0101
   uvBuffOffsets: 
   uvBuffLengths: 
   uvSrcBuff: []
@@ -992,14 +1039,15 @@ MonoBehaviour:
   lmGroupMinLOD: 
   lmGroupLODMatrix: 
   serverGetFileList: []
-  lightmapHasColor: 01
-  lightmapHasMask: 00000000
-  lightmapHasDir: 00
-  lightmapHasRNM: 00
+  lightmapHasColor: 0101
+  lightmapHasMask: 0000000000000000
+  lightmapHasDir: 0000
+  lightmapHasRNM: 0000
   modifiedAssetPathList: []
   modifiedAssets: []
   maps:
   - {fileID: 2800000, guid: 510f967ad7248c545aa37ce6f4be30cc, type: 3}
+  - {fileID: 2800000, guid: d4bc4e4ef7e797f44acb66ceea697450, type: 3}
   masks: []
   dirMaps: []
   rnmMaps0: []
@@ -1010,11 +1058,11 @@ MonoBehaviour:
   - {fileID: 485976723}
   - {fileID: 588505992}
   - {fileID: 803080231}
-  bakedIDs: 000000000000000000000000
+  bakedIDs: 000000000000000001000000
   bakedScaleOffset:
-  - {x: 0.23997349, y: 0.23379055, z: 0.6713205, w: 0.004842147}
-  - {x: 0.6549228, y: 0.6549228, z: 0.0057903472, w: 0.0057903472}
-  - {x: 0.3309685, y: 0.33006376, z: 0.0034262864, w: 0.66993624}
+  - {x: 0.26656228, y: 0.26079264, z: 0.0043221596, w: 0.7392073}
+  - {x: 0.72405523, y: 0.72405523, z: 0.005403274, w: 0.005403274}
+  - {x: 0.9691884, y: 0.96390766, z: 0.016934665, w: 0.016982673}
   bakedVertexOffset: ffffffffffffffffffffffff
   bakedVertexColorMesh:
   - {fileID: 0}
@@ -1029,7 +1077,7 @@ MonoBehaviour:
   bakedScaleOffsetTerrain: []
   assetList: []
   uvOverlapAssetList: 
-  idremap: 00000000
+  idremap: 0000000001000000
   usesRealtimeGI: 0
   emptyDirectionTex: {fileID: 0}
   anyVolumes: 0
@@ -1050,9 +1098,9 @@ MonoBehaviour:
     - {fileID: 803080231}
     bakedIDs: 000000000000000000000000
     bakedScaleOffset:
-    - {x: 0.25277314, y: 0.24644887, z: 0.70600903, w: 0.30688086}
-    - {x: 0.6892661, y: 0.6892661, z: 0.0059227133, w: 0.0059227133}
-    - {x: 0.29542768, y: 0.2954462, z: 0.7045723, w: 0.0034606617}
+    - {x: 0.23997349, y: 0.23379055, z: 0.6713205, w: 0.004842147}
+    - {x: 0.6549228, y: 0.6549228, z: 0.0057903472, w: 0.0057903472}
+    - {x: 0.3309685, y: 0.33006376, z: 0.0034262864, w: 0.66993624}
     bakedVertexColorMesh:
     - {fileID: 0}
     - {fileID: 0}

@@ -43,10 +43,14 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _GradientMap:
+        m_Texture: {fileID: 2800000, guid: 3a8ff7a1660f65044906dd48a1154ddd, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _Lamp:
         m_Texture: {fileID: 0}
-        m_Scale: {x: 0.61, y: 1}
-        m_Offset: {x: 0.14, y: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _LampMask:
         m_Texture: {fileID: 2800000, guid: 1dd51959867131f4a82e25721a9f8ccb, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -77,6 +81,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _Brightness: 26.77
     - _BumpScale: 1
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
@@ -84,19 +89,25 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0
     - _GlossyReflections: 1
+    - _HueShiftSpeed: 0
+    - _LampSmoothness: 0
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
+    - _Scale: 3
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
+    - _Speed: 0.37
     - _SrcBlend: 1
     - _UVSec: 0
+    - _WireSmoothness: 0
     - _ZWrite: 1
     - __dirty: 0
     m_Colors:
-    - _Color: {r: 14.467375, g: 6.1401324, b: 1.3921434, a: 1}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Color1: {r: 0.8415094, g: 0.48309588, b: 0.093677394, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _LampColor: {r: 0.2603773, g: 0.2603773, b: 0.2603773, a: 0}
-    - _WireColor: {r: 0.4490565, g: 0.4490565, b: 0.4490565, a: 0}
+    - _LampColor: {r: 0.26037723, g: 0.26037723, b: 0.26037723, a: 0}
+    - _WireColor: {r: 0.4490564, g: 0.4490564, b: 0.4490564, a: 0}
   m_BuildTextureStacks: []
