@@ -223,7 +223,7 @@ Transform:
   m_GameObject: {fileID: 485976721}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.4427277, y: -0.7913704, z: -0.33346656}
+  m_LocalPosition: {x: 1.397, y: -1, z: -0.719}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -329,7 +329,7 @@ Transform:
   m_GameObject: {fileID: 588505990}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.4427277, y: -1.2583704, z: -0.33346656}
+  m_LocalPosition: {x: 1.4427277, y: -1.5, z: -0.33346656}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -516,11 +516,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 803080234}
-  - component: {fileID: 803080232}
   - component: {fileID: 803080233}
+  - component: {fileID: 803080232}
   - component: {fileID: 803080231}
   m_Layer: 0
-  m_Name: Garland
+  m_Name: FlexiCurve
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -546,7 +546,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 766dfd10d6b2480429f951319dc7fe1e, type: 2}
+  - {fileID: 2100000, guid: f79bc779dd02e284bba388ccd78c0b3c, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -575,7 +575,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 803080230}
-  m_Mesh: {fileID: 4300000, guid: 9d4ec41ffa9fd4042887a2a569514b1b, type: 2}
+  m_Mesh: {fileID: 4300000, guid: c0834aee22a051347aadcd6b8b911aa9, type: 2}
 --- !u!114 &803080233
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -588,32 +588,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aacb1ab985f8f454a9084a3dc847b84b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Spacing: 0.02
+  CurvePreset: {fileID: 11400000, guid: 2ee677b0e5e9f2f438348f35e72e4737, type: 2}
+  Spacing: 0.05
+  Decimatation: 0.2
   Radius: 0.005
   Edges: 3
-  Decimatation: 0.065
-  LightmapPadding: 0.2
+  Element: {fileID: 6532508685850981849, guid: dcfc57a155017e24c8ae7a83f920a7c4, type: 3}
+  ElementsScale: 0.5
+  ElementsSpacing: 0.2
+  DirectionRandomization: 0.05
+  RandomizeRotation: 0
+  LightmapPadding: 0.176
+  RandomSeed: 0
   Points:
-  - {x: 1.0892565, y: 1.8294661, z: -0.58092076}
-  - {x: -1.1975558, y: 1.8809311, z: -1.0925437}
-  - {x: -2.4261215, y: 1.9460387, z: 0.8254795}
-  - {x: -1.0215176, y: 2.0125496, z: 2.4571993}
-  - {x: 1.1147794, y: 1.8940958, z: 1.8309911}
-  - {x: 1.0919571, y: 1.8294938, z: -0.5884912}
+  - {x: 1.0348728, y: 1.8294661, z: -0.8526784}
+  - {x: -1.1894009, y: 1.8818673, z: -1.0910045}
+  - {x: -2.2978778, y: 1.9460387, z: 0.9110801}
+  - {x: -0.8208858, y: 2.1168005, z: 2.4571993}
+  - {x: 1.2025088, y: 1.9681536, z: 1.8397093}
+  - {x: 1.0364535, y: 1.8294938, z: -0.8494706}
   Sags:
-  - -2.172193
-  - -2.4138472
-  - -2.4048724
-  - -2.2008216
-  - -2.3144493
-  Lamp: {fileID: 2534964839176971238, guid: ebf5011284072ac4ca5ce75281e1bb93, type: 3}
-  LampScale: 1
-  LampSpacing: 0.14
-  Seed: 122
-  RandomizeRotation: 1
-  DirectionRandomization: 0.359
-  ShowVerticesIds: 0
-  ShowTrianglesIds: 0
+  - -3.2530248
+  - -3.2377996
+  - -3.3658366
+  - -3.0424855
+  - -3.7118578
+  _curvePresetPrev: {fileID: 11400000, guid: 2ee677b0e5e9f2f438348f35e72e4737, type: 2}
 --- !u!4 &803080234
 Transform:
   m_ObjectHideFlags: 0
@@ -623,7 +623,7 @@ Transform:
   m_GameObject: {fileID: 803080230}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.38, y: 0, z: -0.51}
+  m_LocalPosition: {x: 0.38, y: -0.381, z: -1.009}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1077,7 +1077,7 @@ MonoBehaviour:
   bakedScaleOffsetTerrain: []
   assetList: []
   uvOverlapAssetList: 
-  idremap: 0000000001000000
+  idremap: 0000000000000000
   usesRealtimeGI: 0
   emptyDirectionTex: {fileID: 0}
   anyVolumes: 0

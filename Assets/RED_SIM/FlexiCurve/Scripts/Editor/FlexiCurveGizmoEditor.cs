@@ -3,8 +3,8 @@ using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
-[CustomEditor(typeof(Garland))]
-public class GarlandGizmoEditor : Editor {
+[CustomEditor(typeof(FlexiCurve))]
+public class FlexiCurveGizmoEditor : Editor {
 
     const float _interactableRadius = 72;
 
@@ -12,15 +12,17 @@ public class GarlandGizmoEditor : Editor {
     private bool _isGrab = false;
 
     private void OnSceneGUI() {
+        FlexiCurve garland = (FlexiCurve)target;
+
+        if (garland.CurvePreset == null) return;
 
         // Getting editor UI scale
         System.Type utilityType = typeof(GUIUtility);
         PropertyInfo[] allProps = utilityType.GetProperties(BindingFlags.Static | BindingFlags.NonPublic);
         PropertyInfo property = allProps.First(m => m.Name == "pixelsPerPoint");
         float pixelsPerPoint = (float)property.GetValue(null);
-        Garland garland = (Garland)target;
         var pointerPos = Event.current.mousePosition;
-        float circleGizmoSize = Mathf.Max(garland.Radius, 0.04f) * garland.transform.lossyScale.x;
+        float circleGizmoSize = Mathf.Max(garland.CurvePreset.Radius, 0.04f) * garland.transform.lossyScale.x;
         bool isInRange = false;
 
         if (garland == null) return;
@@ -51,7 +53,9 @@ public class GarlandGizmoEditor : Editor {
             EditorGUI.BeginChangeCheck();
 
             Vector3 oldSagGizmoPos = garland.transform.TransformPoint((garland.WireSegments[i].Curve.P1 + garland.WireSegments[i].Curve.P2)/2);
+#pragma warning disable CS0618 // Type or member is obsolete
             Vector3 newSagGizmoPos = Handles.FreeMoveHandle(oldSagGizmoPos, Quaternion.identity, circleGizmoSize, Vector3.up * 1.1f, Handles.CircleHandleCap);
+#pragma warning restore CS0618 // Type or member is obsolete
 
             if (EditorGUI.EndChangeCheck()) {
                 Undo.RecordObject(garland, "Change Garland Sag");
