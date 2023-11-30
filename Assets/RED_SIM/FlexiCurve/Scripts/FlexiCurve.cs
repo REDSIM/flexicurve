@@ -3,23 +3,33 @@ using System.IO;
 using UnityEditor;
 using UnityEngine;
 
-[RequireComponent(typeof(MeshFilter))]
-public class Garland : MonoBehaviour {
+[RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
+public class FlexiCurve : MonoBehaviour {
 
-    
-    [Min(0.01f)] public float Spacing = 1.0f;
+    [Header("Preset Template")]
+    [Tooltip("Preset is used to auto setup parameters of FlexiCurve. Changing parameters will not change them in the preset itself.")]
+    public FlexiCurvePreset CurvePreset;
+
+    [Header("Curve Mesh")]
+    [Min(0.05f)] public float Spacing = 0.1f;
+    [Range(0, 1)] public float Decimatation = 0.15f;
     [Min(0.001f)] public float Radius = 0.01f;
-    [Min(3)] public int Edges = 5;
-    [Range(0, 1)] public float Decimatation = 1;
+    [Min(3)] public int Edges = 3;
+
+    [Header("Elements Scattering")]
+    public Mesh Element;
+    public float ElementsScale = 1f;
+    [Min(0.05f)] public float ElementsSpacing = 0.2f;
+    [Range(0, 1f)] public float DirectionRandomization = 0.3f;
+    public bool RandomizeRotation = true;
+
+    [Header("Other Settings")]
     [Range(0, 0.9f)] public float LightmapPadding = 0.1f;
+    public int RandomSeed;
+
+    [Header("Curve Points")]
     public Vector3[] Points;
     public float[] Sags;
-    public Mesh Lamp;
-    public float LampScale = 0.1f;
-    [Min(0.01f)] public float LampSpacing = 0.1f;
-    public int Seed;
-    public bool RandomizeRotation = true;
-    [Range(0,1f)]public float DirectionRandomization = 0;
 
     public WireMesh[] WireSegments {
         get {
@@ -29,10 +39,8 @@ public class Garland : MonoBehaviour {
     }
     private WireMesh[] _wireSegments;
 
-    public bool ShowVerticesIds;
-    public bool ShowTrianglesIds;
-
     private MeshFilter _filter;
+    private MeshRenderer _renderer;
 
     private List<Vector3> _vertices = new List<Vector3>();
     private List<Vector3> _normals = new List<Vector3>();
@@ -47,16 +55,40 @@ public class Garland : MonoBehaviour {
 
     private float _decimate => Mathf.LerpUnclamped(0f, 0.01f, Decimatation); // Actual decimation level
 
+    [HideInInspector] public FlexiCurvePreset _curvePresetPrev = null; // Previous curve presed used, for comparison
+
+    public void Setup(FlexiCurvePreset preset) {
+
+        // Curve Mesh
+        Spacing = preset.Spacing;
+        Decimatation = preset.Decimatation;
+        Radius = preset.Radius;
+        Edges = preset.Edges;
+
+        // Elements Scattering
+        Element = preset.Element;
+        ElementsScale = preset.ElementsScale;
+        ElementsSpacing = preset.ElementsSpacing;
+        DirectionRandomization = preset.DirectionRandomization;
+        RandomizeRotation = preset.RandomizeRotation;
+
+        // Preset Template
+        if (_renderer == null || preset.Material == null) return;
+        _renderer.sharedMaterial = preset.Material;
+
+    }
+
     public void OnValidate() {
+
+        // Initialize
+        if(!ReferenceEquals(CurvePreset, _curvePresetPrev)) {
+            _curvePresetPrev = CurvePreset;
+            Setup(CurvePreset);
+        }
 
         if (_filter == null) return;
         _lastTimeValidated = EditorApplication.timeSinceStartup;
         _validated = true;
-
-        if (Spacing < 0.01f) Spacing = 0.01f;
-        if (LampSpacing < 0.01f) LampSpacing = 0.01f;
-        if (Edges < 3) Edges = 3;
-        if (Radius < 0.001f) Radius = 0.001f;
 
         if (Points.Length < 2) return;
 
@@ -108,9 +140,9 @@ public class Garland : MonoBehaviour {
             _uv0.AddRange(_wireSegments[i].UV0);
 
             // Adding lamp points
-            if (Lamp != null) {
+            if (Element != null) {
                 lampPoints[i] = new List<Vector3>();
-                lampPoints[i].AddRange(_wireSegments[i].Curve.GetUniformPointArray(LampSpacing));
+                lampPoints[i].AddRange(_wireSegments[i].Curve.GetUniformPointArray(ElementsSpacing));
                 if(lampPoints[i].Count > 2) lampsCount += lampPoints[i].Count - 2;
             }
 
@@ -142,7 +174,7 @@ public class Garland : MonoBehaviour {
             // Individual lamps
             for (int l = 1; l < count; l++) {
 
-                _seed = Seed + i * 5000 + l * 50; // Shift seed for every wire segment and lamp
+                _seed = RandomSeed + i * 5000 + l * 50; // Shift seed for every wire segment and lamp
                 wireDir = Vector3.Normalize(lampPoints[i][l + 1] - lampPoints[i][l - 1]); // Direction, the wire is going to
 
                 // Calculated wire directions
@@ -165,31 +197,31 @@ public class Garland : MonoBehaviour {
                 Vector2 shift = new Vector2((float)((float)(lampId + _wireSegments.Length) % uvSideSize + LightmapPadding / 2) / uvSideSize, (float)(Mathf.Floor((float)(lampId + _wireSegments.Length) / uvSideSize) + LightmapPadding / 2) / uvSideSize);
 
                 // Generating Vertices and UV
-                for (int v = 0; v < Lamp.vertexCount; v++) {
+                for (int v = 0; v < Element.vertexCount; v++) {
 
                     // Vertices
-                    _vertices.Add((lampWireRot * (lampAxisRot * Lamp.vertices[v])) * LampScale + lampPoints[i][l]);
+                    _vertices.Add((lampWireRot * (lampAxisRot * Element.vertices[v])) * ElementsScale + lampPoints[i][l]);
 
                     // Normals
-                    _normals.Add(lampWireRot * (lampAxisRot * Lamp.normals[v]));
+                    _normals.Add(lampWireRot * (lampAxisRot * Element.normals[v]));
 
                     // Regular UV
-                    if (Lamp.uv.Length > 0) {
+                    if (Element.uv.Length > 0) {
                         float glowShift = lampsCount == 0 ? 0 : (lampId + 0.5f) / lampsCount; // Offsetting uv to make lamps glow one after another
-                        _uv0.Add(new Vector4(Lamp.uv[v].x, Lamp.uv[v].y, glowShift, glowShift));
+                        _uv0.Add(new Vector4(Element.uv[v].x, Element.uv[v].y, glowShift, glowShift));
                     } else {
                         _uv0.Add(Vector4.zero);
                     }
 
                     // Lightmap UV
-                    if (Lamp.uv2.Length > 0) _uv1.Add(shift + Lamp.uv2[v] * (1 - LightmapPadding) / uvSideSize);
+                    if (Element.uv2.Length > 0) _uv1.Add(shift + Element.uv2[v] * (1 - LightmapPadding) / uvSideSize);
                     else _uv1.Add(shift);
 
                 }
 
                 // Triangles
-                for (int t = 0; t < Lamp.triangles.Length; t++) {
-                    _triangles.Add(Lamp.triangles[t] + offset);
+                for (int t = 0; t < Element.triangles.Length; t++) {
+                    _triangles.Add(Element.triangles[t] + offset);
                 }
 
                 lampId++; // Now incrementing the current lamp id
@@ -213,30 +245,17 @@ public class Garland : MonoBehaviour {
     private void OnDrawGizmos() {
 
         if (_filter == null) TryGetComponent(out _filter);
+        if (_renderer == null) TryGetComponent(out _renderer);
 
         if (_filter != null && _filter.sharedMesh == null) {
             _filter.sharedMesh = new Mesh();
-            _filter.sharedMesh.name = $"Garland_{Random.Range(int.MinValue, int.MaxValue)}";
+            _filter.sharedMesh.name = $"FlexiCurve_{Random.Range(int.MinValue, int.MaxValue)}";
             OnValidate();
         }
 
         if (_validated && EditorApplication.timeSinceStartup - _lastTimeValidated > 1f) {
             _validated = false;
             SaveMesh();
-        }
-
-        if (ShowVerticesIds) {
-            GUI.color = Color.white;
-            for (int i = 0; i < _vertices.Count; i++) {
-                UnityEditor.Handles.Label(_vertices[i], "" + i);
-            }
-        }
-
-        if (ShowTrianglesIds) {
-            GUI.color = Color.black;
-            for (int i = 0; i < _triangles.Count; i += 3) {
-                UnityEditor.Handles.Label((_vertices[_triangles[i]] + _vertices[_triangles[i + 1]] + _vertices[_triangles[i + 2]]) / 3, "" + i / 3);
-            }
         }
 
     }
@@ -246,7 +265,7 @@ public class Garland : MonoBehaviour {
 
         Mesh mesh = _filter.sharedMesh;
 
-        string path = $"Assets/Garlands/{mesh.name}.asset";
+        string path = $"Assets/FlexiCurveMeshes/{mesh.name}.asset";
 
         // Check if the folder exists, if not, create it
         if (!Directory.Exists(Path.GetDirectoryName(path))) {

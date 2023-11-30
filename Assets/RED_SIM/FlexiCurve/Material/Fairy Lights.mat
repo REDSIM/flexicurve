@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Black
+  m_Name: Fairy Lights
   m_Shader: {fileID: 4800000, guid: aa6cefc3ffc617c4f969f646133ec637, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -98,7 +98,7 @@ Material:
     - _Scale: 3
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
-    - _Speed: 0.37
+    - _Speed: 0.1
     - _SrcBlend: 1
     - _UVSec: 0
     - _WireSmoothness: 0
