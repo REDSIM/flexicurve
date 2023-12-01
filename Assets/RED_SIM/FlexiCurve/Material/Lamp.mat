@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Fairy Lights
+  m_Name: Lamp
   m_Shader: {fileID: 4800000, guid: aa6cefc3ffc617c4f969f646133ec637, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -40,11 +40,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Element:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: ee633c3b5bf42144cab2d535e4760f4d, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ElementMask:
-        m_Texture: {fileID: 2800000, guid: 1dd51959867131f4a82e25721a9f8ccb, type: 3}
+        m_Texture: {fileID: 2800000, guid: de75b09d309efdf4595e17d64d5c7652, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ElementNormal:
@@ -56,7 +56,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _GradientMap:
-        m_Texture: {fileID: 2800000, guid: 3a8ff7a1660f65044906dd48a1154ddd, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Lamp:
@@ -97,7 +97,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Brightness: 26.77
+    - _Brightness: 6.69
     - _BumpScale: 1
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
@@ -113,7 +113,7 @@ Material:
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
-    - _Scale: 3
+    - _Scale: 1
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _Speed: 0.1
@@ -124,7 +124,7 @@ Material:
     - _ZWrite: 1
     - __dirty: 0
     m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 0.96981126, g: 0.4641302, b: 0.23238869, a: 1}
     - _Color1: {r: 0.8415094, g: 0.48309588, b: 0.093677394, a: 1}
     - _ElementColor: {r: 0.04905659, g: 0.04905659, b: 0.04905659, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}

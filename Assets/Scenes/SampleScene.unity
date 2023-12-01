@@ -546,7 +546,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: f79bc779dd02e284bba388ccd78c0b3c, type: 2}
+  - {fileID: 2100000, guid: 5466ac684f8814e49bde60ead8a92393, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -588,35 +588,38 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aacb1ab985f8f454a9084a3dc847b84b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CurvePreset: {fileID: 11400000, guid: 85ed202c46ed4ac459f57cc74d0bc4ef, type: 2}
+  CurvePreset: {fileID: 11400000, guid: 0aa4945786270f74f967148e789d2fb8, type: 2}
   Spacing: 0.05
   Decimatation: 0.2
   Radius: 0.005
   Edges: 3
-  Element: {fileID: -2222346464153789849, guid: 79cb3ccc30da7b3498a56aaa4abb665a,
-    type: 3}
-  ElementsScale: 0.5
-  ElementsSpacing: 0.3
-  DirectionRandomization: 1
+  Element: {fileID: 289301614986012343, guid: 67774bf1a5807954a9cff27b3bdc3ff9, type: 3}
+  ElementsScale: 1.86
+  ElementsSpacing: 0.35
+  DirectionRandomization: 0.06
   RandomizeRotation: 1
-  LightmapPadding: 0.176
+  LightmapPadding: 0.179
   RandomSeed: 0
   Points:
-  - {x: -2.2882223, y: 1.2196078, z: 1.4882513}
-  - {x: -3.0937605, y: 1.4556888, z: 0.057851017}
-  - {x: -1.8800963, y: 1.5716987, z: -2.464219}
-  - {x: 0.82494116, y: 1.1393704, z: -2.2124267}
-  - {x: 1.719793, y: 1.1168729, z: -0.24419224}
-  - {x: 0.52487147, y: 1.0929255, z: 1.7354016}
-  - {x: -0.55114806, y: 0.8108169, z: 1.6563042}
+  - {x: -4.507599, y: 1.166827, z: 0.6324104}
+  - {x: -2.0190043, y: 1.5716987, z: -1.4614925}
+  - {x: 0.6101295, y: 2.0100298, z: -1.6329421}
+  - {x: 2.8037324, y: 1.7851218, z: 1.2433671}
+  - {x: 0.40788913, y: 1.9513656, z: 4.753784}
+  - {x: -2.336131, y: 1.2482572, z: 4.0245304}
+  - {x: -3.0871243, y: 0.99412155, z: 0.9639213}
+  - {x: 1.7920471, y: 1.1393704, z: 1.4666857}
+  - {x: 0.06825656, y: 1.1362144, z: 0.5144666}
   Sags:
-  - -1.1553084
-  - -1.6704024
+  - -2.200187
+  - -2.7892613
+  - -3.4838066
+  - -2.6514807
   - -1.8872077
-  - -2.1227405
-  - -2.0301516
-  - -1.8872077
-  _curvePresetPrev: {fileID: 11400000, guid: 85ed202c46ed4ac459f57cc74d0bc4ef, type: 2}
+  - -1.2638272
+  - -1.5587859
+  - -1.5587859
+  _curvePresetPrev: {fileID: 11400000, guid: 0aa4945786270f74f967148e789d2fb8, type: 2}
 --- !u!4 &803080234
 Transform:
   m_ObjectHideFlags: 0
@@ -626,7 +629,7 @@ Transform:
   m_GameObject: {fileID: 803080230}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.38, y: -0.381, z: -1.009}
+  m_LocalPosition: {x: 0.38, y: -0.381, z: -0.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
