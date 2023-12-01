@@ -59,6 +59,8 @@ public class FlexiCurve : MonoBehaviour {
 
     public void Setup(FlexiCurvePreset preset) {
 
+        if (preset == null) return;
+
         // Curve Mesh
         Spacing = preset.Spacing;
         Decimatation = preset.Decimatation;
@@ -82,6 +84,10 @@ public class FlexiCurve : MonoBehaviour {
 
         // Initialize
         if(!ReferenceEquals(CurvePreset, _curvePresetPrev)) {
+            // Undo
+            Undo.RecordObject(this, "Changing FlexiCurve Preset");
+            if(_renderer != null && CurvePreset.Material != null) Undo.RecordObject(_renderer, "Changing FlexiCurve Material");
+            // Setup
             _curvePresetPrev = CurvePreset;
             Setup(CurvePreset);
         }
@@ -162,19 +168,26 @@ public class FlexiCurve : MonoBehaviour {
             }
         }
 
-        // Current lamp id we are working with
-        int lampId = 0;
+        // Buffering mesh data
+        var elementVertices = Element.vertices;
+        var elementNormals = Element.normals;
+        var elementTriangles = Element.triangles;
+        var elementUV = Element.uv;
+        var elementUV2 = Element.uv2;
 
-        // Scattering lamps
+        // Current element id we are working with
+        int elementId = 0;
+
+        // Scattering elements
         for (int i = 0; i < lampPoints.Length; i++) {
 
-            lampAngle = 0; // Reset old lamp angle for every wire segment
+            lampAngle = 0; // Reset old element angle for every wire segment
             int count = lampPoints[i].Count - 1;
 
-            // Individual lamps
+            // Individual elements
             for (int l = 1; l < count; l++) {
 
-                _seed = RandomSeed + i * 5000 + l * 50; // Shift seed for every wire segment and lamp
+                _seed = RandomSeed + i * 5000 + l * 50; // Shift seed for every wire segment and element
                 wireDir = Vector3.Normalize(lampPoints[i][l + 1] - lampPoints[i][l - 1]); // Direction, the wire is going to
 
                 // Calculated wire directions
@@ -182,10 +195,10 @@ public class FlexiCurve : MonoBehaviour {
                 wireNormal = Vector3.Cross(wireTangent, wireDir).normalized;
                 lampWireRot = Quaternion.AngleAxis(Vector3.SignedAngle(Vector3.down, wireNormal, wireTangent), wireTangent);
 
-                // Lamp axis rotation 
+                // Element axis rotation 
                 lampAxisRot = RandomizeRotation ? Quaternion.AngleAxis(Utils.RandomAngle(_seed), Vector3.up) : Quaternion.FromToRotation(Vector3.right, new Vector3(wireDir.x, 0, wireDir.z).normalized);
 
-                // Lamp wire rotation based on selective pseudo random
+                // Element wire rotation based on selective pseudo random
                 if (DirectionRandomization > 0) {
                     do { lampAngleNew = Utils.RandomAngle(_seed + 1); _seed++; }
                     while (Mathf.DeltaAngle(lampAngle, lampAngleNew) < 90f); // If alsost the same angle as before, rerandom
@@ -194,37 +207,38 @@ public class FlexiCurve : MonoBehaviour {
                 }
 
                 // Lightmap UV shift
-                Vector2 shift = new Vector2((float)((float)(lampId + _wireSegments.Length) % uvSideSize + LightmapPadding / 2) / uvSideSize, (float)(Mathf.Floor((float)(lampId + _wireSegments.Length) / uvSideSize) + LightmapPadding / 2) / uvSideSize);
+                Vector2 shift = new Vector2((float)((float)(elementId + _wireSegments.Length) % uvSideSize + LightmapPadding / 2) / uvSideSize, (float)(Mathf.Floor((float)(elementId + _wireSegments.Length) / uvSideSize) + LightmapPadding / 2) / uvSideSize);
+
 
                 // Generating Vertices and UV
                 for (int v = 0; v < Element.vertexCount; v++) {
 
                     // Vertices
-                    _vertices.Add((lampWireRot * (lampAxisRot * Element.vertices[v])) * ElementsScale + lampPoints[i][l]);
+                    _vertices.Add((lampWireRot * (lampAxisRot * elementVertices[v])) * ElementsScale + lampPoints[i][l]);
 
                     // Normals
-                    _normals.Add(lampWireRot * (lampAxisRot * Element.normals[v]));
+                    _normals.Add(lampWireRot * (lampAxisRot * elementNormals[v]));
 
                     // Regular UV
-                    if (Element.uv.Length > 0) {
-                        float glowShift = lampsCount == 0 ? 0 : (lampId + 0.5f) / lampsCount; // Offsetting uv to make lamps glow one after another
-                        _uv0.Add(new Vector4(Element.uv[v].x, Element.uv[v].y, glowShift, glowShift));
+                    if (elementUV.Length > 0) {
+                        float glowShift = lampsCount == 0 ? 0 : (elementId + 0.5f) / lampsCount; // Offsetting uv to make lamps glow one after another
+                        _uv0.Add(new Vector4(elementUV[v].x, elementUV[v].y, glowShift, glowShift));
                     } else {
                         _uv0.Add(Vector4.zero);
                     }
 
                     // Lightmap UV
-                    if (Element.uv2.Length > 0) _uv1.Add(shift + Element.uv2[v] * (1 - LightmapPadding) / uvSideSize);
+                    if (elementUV2.Length > 0) _uv1.Add(shift + elementUV2[v] * (1 - LightmapPadding) / uvSideSize);
                     else _uv1.Add(shift);
 
                 }
 
                 // Triangles
-                for (int t = 0; t < Element.triangles.Length; t++) {
-                    _triangles.Add(Element.triangles[t] + offset);
+                for (int t = 0; t < elementTriangles.Length; t++) {
+                    _triangles.Add(elementTriangles[t] + offset);
                 }
 
-                lampId++; // Now incrementing the current lamp id
+                elementId++; // Now incrementing the current element id
 
                 offset = _vertices.Count;
 
@@ -233,6 +247,12 @@ public class FlexiCurve : MonoBehaviour {
         }
 
         _filter.sharedMesh.Clear();
+        // Will mesh use UInt16 format, or UInt32?
+        if (_vertices.Count > 65535) {
+            _filter.sharedMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+        } else {
+            _filter.sharedMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt16;
+        }
         _filter.sharedMesh.vertices = _vertices.ToArray();
         _filter.sharedMesh.triangles = _triangles.ToArray();
         _filter.sharedMesh.normals = _normals.ToArray();
