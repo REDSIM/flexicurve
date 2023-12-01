@@ -588,32 +588,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aacb1ab985f8f454a9084a3dc847b84b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CurvePreset: {fileID: 11400000, guid: 2ee677b0e5e9f2f438348f35e72e4737, type: 2}
+  CurvePreset: {fileID: 11400000, guid: 85ed202c46ed4ac459f57cc74d0bc4ef, type: 2}
   Spacing: 0.05
   Decimatation: 0.2
   Radius: 0.005
   Edges: 3
-  Element: {fileID: 6532508685850981849, guid: dcfc57a155017e24c8ae7a83f920a7c4, type: 3}
+  Element: {fileID: -2222346464153789849, guid: 79cb3ccc30da7b3498a56aaa4abb665a,
+    type: 3}
   ElementsScale: 0.5
-  ElementsSpacing: 0.2
-  DirectionRandomization: 0.05
-  RandomizeRotation: 0
+  ElementsSpacing: 0.3
+  DirectionRandomization: 1
+  RandomizeRotation: 1
   LightmapPadding: 0.176
   RandomSeed: 0
   Points:
-  - {x: 1.0348728, y: 1.8294661, z: -0.8526784}
-  - {x: -1.1894009, y: 1.8818673, z: -1.0910045}
-  - {x: -2.2978778, y: 1.9460387, z: 0.9110801}
-  - {x: -0.8208858, y: 2.1168005, z: 2.4571993}
-  - {x: 1.2025088, y: 1.9681536, z: 1.8397093}
-  - {x: 1.0364535, y: 1.8294938, z: -0.8494706}
+  - {x: -2.2882223, y: 1.2196078, z: 1.4882513}
+  - {x: -3.0937605, y: 1.4556888, z: 0.057851017}
+  - {x: -1.8800963, y: 1.5716987, z: -2.464219}
+  - {x: 0.82494116, y: 1.1393704, z: -2.2124267}
+  - {x: 1.719793, y: 1.1168729, z: -0.24419224}
+  - {x: 0.52487147, y: 1.0929255, z: 1.7354016}
+  - {x: -0.55114806, y: 0.8108169, z: 1.6563042}
   Sags:
-  - -3.2530248
-  - -3.2377996
-  - -3.3658366
-  - -3.0424855
-  - -3.7118578
-  _curvePresetPrev: {fileID: 11400000, guid: 2ee677b0e5e9f2f438348f35e72e4737, type: 2}
+  - -1.1553084
+  - -1.6704024
+  - -1.8872077
+  - -2.1227405
+  - -2.0301516
+  - -1.8872077
+  _curvePresetPrev: {fileID: 11400000, guid: 85ed202c46ed4ac459f57cc74d0bc4ef, type: 2}
 --- !u!4 &803080234
 Transform:
   m_ObjectHideFlags: 0
