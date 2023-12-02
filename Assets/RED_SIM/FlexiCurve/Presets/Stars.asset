@@ -10,15 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 17a38694a426dee43a3cca9e75a16f49, type: 3}
-  m_Name: Lamps
+  m_Name: Stars
   m_EditorClassIdentifier: 
-  Material: {fileID: 2100000, guid: 5466ac684f8814e49bde60ead8a92393, type: 2}
+  Material: {fileID: 2100000, guid: 454717a3ba44fb0448f4cfef597a84d0, type: 2}
   Spacing: 0.05
   Decimatation: 0.2
-  Radius: 0.005
+  Radius: 0.003
   Edges: 3
-  Element: {fileID: 3468755486377148355, guid: 67774bf1a5807954a9cff27b3bdc3ff9, type: 3}
-  ElementsScale: 1.25
-  ElementsSpacing: 0.35
-  DirectionRandomization: 0.06
+  Element: {fileID: -5801228030656462994, guid: 8a267eb74377a8040a897e35d6543aee,
+    type: 3}
+  ElementsScale: 1.85
+  ElementsSpacing: 0.2
+  DirectionRandomization: 0.1
   RandomizeRotation: 1

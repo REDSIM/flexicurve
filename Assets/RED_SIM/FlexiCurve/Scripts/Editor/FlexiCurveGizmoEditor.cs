@@ -7,9 +7,11 @@ using UnityEngine;
 [CustomEditor(typeof(FlexiCurve))]
 public class FlexiCurveGizmoEditor : Editor {
 
-    const float _interactableRadius = 72;
+    const float _pointInteractableRadius = 72;
+    const float _sagInteractableRadius = 24;
 
-    private int _gizmoID = 0;
+    private int _pointGizmoID = 0;
+    private int _sagGizmoID = 0;
     private bool _isGrab = false;
     private bool _isCtrlPressed = false;
 
@@ -20,8 +22,8 @@ public class FlexiCurveGizmoEditor : Editor {
         HandleUtility.AddDefaultControl(GUIUtility.GetControlID(FocusType.Passive));
 
         // Limiting _gizmoID just in case 
-        if (_gizmoID >= garland.Points.Length) {
-            _gizmoID = garland.Points.Length - 1;
+        if (_pointGizmoID >= garland.Points.Length) {
+            _pointGizmoID = garland.Points.Length - 1;
         }
 
         // Checking is Ctrl button is pressed
@@ -38,26 +40,44 @@ public class FlexiCurveGizmoEditor : Editor {
         float pixelsPerPoint = (float)property.GetValue(null);
         var pointerPos = Event.current.mousePosition;
         float circleGizmoSize = Mathf.Max(garland.Radius, 0.04f) * garland.transform.lossyScale.x;
-        bool isInRange = false;
+        Vector3 camPos = SceneView.currentDrawingSceneView.camera.transform.position;
+        bool isHoverPointGizmo = false;
+        bool isHoverSagGizmo = false;
 
         if (garland == null) return;
 
         // If grabbing already, then search the closest gizmo to the pointer
         if (!_isGrab) {
-            float closestDistance = _interactableRadius * pixelsPerPoint;
+            float closestDistance = _pointInteractableRadius * pixelsPerPoint;
+
+            // Iterating points
             for (int i = 0; i < garland.Points.Length; i++) {
                 Vector2 gizmoPos = HandleUtility.WorldToGUIPoint(garland.transform.TransformPoint(garland.Points[i]));
                 float dist = Vector2.Distance(gizmoPos, pointerPos);
                 if (dist < closestDistance) {
                     closestDistance = dist;
-                    _gizmoID = i; // Saving gizmo id to grab it in future
-                    isInRange = true;
+                    _pointGizmoID = i; // Saving gizmo id to grab it in future
+                    isHoverPointGizmo = true;
+                }
+            }
+
+            // Limiting closest distance for sag gizmos
+            closestDistance = Mathf.Min(closestDistance, _sagInteractableRadius * pixelsPerPoint);
+
+            // Iterating sags
+            for (int i = 0; i < garland.Sags.Length; i++) {
+                Vector2 gizmoPos = HandleUtility.WorldToGUIPoint(garland.transform.TransformPoint((garland.WireSegments[i].Curve.P1 + garland.WireSegments[i].Curve.P2) / 2));
+                float dist = Vector2.Distance(gizmoPos, pointerPos);
+                if (dist < closestDistance) {
+                    closestDistance = dist;
+                    _sagGizmoID = i; // Saving gizmo id to grab it in future
+                    isHoverSagGizmo = true;
                 }
             }
         }
 
         // Start grabbing gizmo or stop grabbing
-        if (isInRange && Event.current.type == EventType.MouseDown && Event.current.button == 0){
+        if (isHoverPointGizmo && Event.current.type == EventType.MouseDown && Event.current.button == 0){
             _isGrab = true;
         } else if (Event.current.type == EventType.MouseUp && Event.current.button == 0) {
             _isGrab = false;
@@ -65,7 +85,7 @@ public class FlexiCurveGizmoEditor : Editor {
 
         // Drawing cursor
         if (_isCtrlPressed) {
-            if (isInRange) {
+            if (!isHoverSagGizmo && isHoverPointGizmo) {
                 EditorGUIUtility.AddCursorRect(SceneView.lastActiveSceneView.camera.pixelRect, MouseCursor.ArrowMinus);
             } else {
                 EditorGUIUtility.AddCursorRect(SceneView.lastActiveSceneView.camera.pixelRect, MouseCursor.ArrowPlus);
@@ -73,43 +93,78 @@ public class FlexiCurveGizmoEditor : Editor {
         }
 
         // Sag handles
-        if (!_isCtrlPressed) {
-            for (int i = 0; i < garland.Sags.Length; i++) {
-                EditorGUI.BeginChangeCheck();
+        for (int i = 0; i < garland.Sags.Length; i++) {
+            EditorGUI.BeginChangeCheck();
 
-                Vector3 oldSagGizmoPos = garland.transform.TransformPoint((garland.WireSegments[i].Curve.P1 + garland.WireSegments[i].Curve.P2) / 2);
+            Vector3 oldSagGizmoPos = garland.transform.TransformPoint((garland.WireSegments[i].Curve.P1 + garland.WireSegments[i].Curve.P2) / 2);
+
+            if (!_isCtrlPressed || !isHoverSagGizmo || _sagGizmoID != i) {
+
+                // If we not hovering a sag gizmo with ctrl button pressed
 #pragma warning disable CS0618 // Type or member is obsolete
                 Vector3 newSagGizmoPos = Handles.FreeMoveHandle(oldSagGizmoPos, Quaternion.identity, circleGizmoSize, Vector3.up * 0.25f, Handles.CircleHandleCap);
 #pragma warning restore CS0618 // Type or member is obsolete
-
                 if (EditorGUI.EndChangeCheck()) {
                     Undo.RecordObject(garland, "Changing FlexiCurve Sag");
                     garland.Sags[i] += (newSagGizmoPos.y - oldSagGizmoPos.y) * 1f;
                     garland.OnValidate();
                 }
+
+            } else {
+
+                // If we hovering a sag gizmo with ctrl button pressed
+                Quaternion rot = Quaternion.FromToRotation(Vector3.forward, camPos - oldSagGizmoPos);
+                Handles.color = Color.yellow;
+                Handles.CircleHandleCap(0, oldSagGizmoPos, rot, circleGizmoSize, EventType.Repaint);
+                Handles.color = Color.white;
+
+                if (Event.current.type == EventType.MouseDown && Event.current.button == 0) {
+                    // If we clicked on sag gizmo with ctrl button pressed
+                    if (isHoverSagGizmo) {
+                        // Recording Undo
+                        Undo.RecordObject(garland, "Adding FlexiCurve Point");
+
+                        // Initializing arrays
+                        List<Vector3> points = new List<Vector3>(garland.Points);
+                        List<float> sags = new List<float>(garland.Sags);
+
+                        // Editing arrays
+                        points.Insert(i + 1, (points[i] + points[i + 1]) / 2);
+                        sags.Insert(i, sags[i]);
+
+                        // Apply points array
+                        garland.Points = points.ToArray();
+                        garland.Sags = sags.ToArray();
+                        garland.OnValidate();
+
+                        // Supress click
+                        Event.current.Use();
+                    }
+                }
+
             }
         }
 
         // Actual gizmo movement
-        if ((isInRange || _isGrab) && !_isCtrlPressed) {
+        if ((isHoverPointGizmo || _isGrab) && !_isCtrlPressed) {
             EditorGUI.BeginChangeCheck();
-            Vector3 newPos = Handles.DoPositionHandle(garland.transform.TransformPoint(garland.Points[_gizmoID]), Quaternion.identity);
+            Vector3 newPos = Handles.DoPositionHandle(garland.transform.TransformPoint(garland.Points[_pointGizmoID]), Quaternion.identity);
             if (EditorGUI.EndChangeCheck()) {
                 Undo.RecordObject(garland, "Moving FlexiCurve Point");
-                garland.Points[_gizmoID] = garland.transform.InverseTransformPoint(newPos);
+                garland.Points[_pointGizmoID] = garland.transform.InverseTransformPoint(newPos);
                 garland.OnValidate();
             }
         }
-        Vector3 camPos = SceneView.currentDrawingSceneView.camera.transform.position;
+        
         for (int i = 0; i < garland.Points.Length; i++) {
-            if (!isInRange || i != _gizmoID) {
+            if (isHoverSagGizmo || !isHoverPointGizmo || i != _pointGizmoID) {
 
                 // Draw regular handles
                 Quaternion rot = Quaternion.FromToRotation(Vector3.forward, camPos - garland.transform.TransformPoint(garland.Points[i]));
                 Handles.color = Color.white;
                 Handles.CircleHandleCap(0, garland.transform.TransformPoint(garland.Points[i]), rot, circleGizmoSize, EventType.Repaint);
 
-            } else if(isInRange && _isCtrlPressed && i == _gizmoID && garland.Points.Length > 2) {
+            } else if(isHoverPointGizmo && !isHoverSagGizmo && _isCtrlPressed && i == _pointGizmoID) {
 
                 // Should draw red delete circle
                 Quaternion rot = Quaternion.FromToRotation(Vector3.forward, camPos - garland.transform.TransformPoint(garland.Points[i]));
@@ -117,7 +172,7 @@ public class FlexiCurveGizmoEditor : Editor {
                 Handles.CircleHandleCap(0, garland.transform.TransformPoint(garland.Points[i]), rot, circleGizmoSize, EventType.Repaint);
 
                 // Delete
-                if (Event.current.type == EventType.MouseDown && Event.current.button == 0) {
+                if (Event.current.type == EventType.MouseDown && Event.current.button == 0 && garland.Points.Length > 2) {
 
                     // Recording Undo
                     Undo.RecordObject(garland, "Removing FlexiCurve Point");
@@ -127,8 +182,8 @@ public class FlexiCurveGizmoEditor : Editor {
                     List<float> sags = new List<float>(garland.Sags);
                     
                     // Editing arrays
-                    points.RemoveAt(_gizmoID);
-                    if(_gizmoID > 0) sags.RemoveAt(_gizmoID - 1);
+                    points.RemoveAt(_pointGizmoID);
+                    if(_pointGizmoID > 0) sags.RemoveAt(_pointGizmoID - 1);
                     
                     // Apply points array
                     garland.Points = points.ToArray();
@@ -143,7 +198,7 @@ public class FlexiCurveGizmoEditor : Editor {
         }
 
         // Adding new point
-        if (!isInRange && _isCtrlPressed) {
+        if (!isHoverPointGizmo && !isHoverSagGizmo && _isCtrlPressed) {
             object hitobj = HandleUtility.RaySnap(HandleUtility.GUIPointToWorldRay(Event.current.mousePosition));
             if(hitobj != null) {
                 RaycastHit hit = (RaycastHit)hitobj;
