@@ -1,0 +1,31 @@
+FlexiCurve by RED_SIM License Agreement
+Original asset: https://www.patreon.com/posts/94014721/
+
+1. Grant of License: This License Agreement ("Agreement") is a legal agreement between you (either an individual or a single entity) and RED_SIM, the creator and owner of the Unity Tool ("FlexiCurve"). By downloading, installing, or using the Tool, you agree to be bound by the terms of this Agreement. RED_SIM grants you a non-exclusive, non-transferable, free license to use the Tool for both personal and commercial purposes, subject to the terms outlined in this Agreement.
+
+2. Attribution: You must credit RED_SIM in any use of the Tool. This credit should be visible in a reasonable manner, and if it used in VRChat, it should include a link to the RED_SIM's patreon page. If you want to use it without mentioning, please, consider buying a full version of the asset if it's available, or contact RED_SIM, the creator of the asset, directly for a special permission.
+
+3. Prohibitions: You are expressly prohibited from:
+	a. Selling, redistributing, sublicensing, or otherwise commercially exploiting the Tool as a standalone product.
+	b. Claiming ownership or original creatorship of the Tool.
+
+4. Permitted Inclusion in Commercial Projects: You may include the Tool as a component of a larger project or software that you are developing for commercial purposes, provided that the Tool is not presented as a separate, standalone product or as your own creation or modification.
+
+5. Modification and Personal Use: You are allowed to modify the source code of the Tool for your own personal use only. Modifications are subject to this Agreement and must not be distributed or made available to others in any form. If you want a premission to distribute a modified version of this too, please contact the creator, RED_SIM.
+
+6. Contact for Special Permissions: If you wish to use the Tool in ways not covered by this Agreement, you may contact RED_SIM to request special permissions. Such permissions may be granted at the discretion of RED_SIM and may require a separate agreement.
+
+7. No Warranty: The Tool "FlexiCurve" is provided 'as is' without any warranty of any kind, either expressed or implied, including but not limited to the implied warranties of merchantability and fitness for a particular purpose. RED_SIM does not warrant or assume responsibility for the accuracy or completeness of any information, text, graphics, links, or other items contained within the Tool.
+
+8. Limitation of Liability: In no event shall RED_SIM be liable for any special, incidental, indirect, or consequential damages whatsoever (including, without limitation, damages for loss of business profits, business interruption, loss of business information, or any other pecuniary loss) arising out of the use of or inability to use the Tool, even if RED_SIM has been advised of the possibility of such damages.
+
+9. Termination: This Agreement is effective until terminated. Your rights under this Agreement will terminate automatically without notice from RED_SIM if you fail to comply with any term(s) of this Agreement. Upon termination, you shall cease all use of the Tool and destroy all copies, full or partial, of the Tool.
+
+10. General: This Agreement constitutes the entire agreement between you and RED_SIM concerning the Tool and supersedes all prior agreements and understandings, whether written or oral, with respect to the Tool.
+
+11. Governing Law: This Agreement shall be governed by the laws of the jurisdiction in which RED_SIM resides, without regard to its conflict of law provisions.
+
+Contacts:
+- Discord: RED_SIM
+- Email: business@sim.red
+- Patreon: https://www.patreon.com/red_sim
