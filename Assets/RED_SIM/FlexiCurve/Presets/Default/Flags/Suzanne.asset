@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17a38694a426dee43a3cca9e75a16f49, type: 3}
+  m_Name: Suzanne
+  m_EditorClassIdentifier: 
+  Material: {fileID: 2100000, guid: f79bc779dd02e284bba388ccd78c0b3c, type: 2}
+  GenerateWires: 1
+  Spacing: 0.05
+  Decimatation: 0.05
+  Radius: 0.005
+  Edges: 3
+  Element: {fileID: -2222346464153789849, guid: 79cb3ccc30da7b3498a56aaa4abb665a,
+    type: 3}
+  ElementsScale: 1
+  ElementsSpacing: 0.3
+  DirectionRandomization: 1
+  RandomizeRotation: 1
+  GeneratePerElementWires: 0
+  ElementOffset: 0

@@ -19,6 +19,21 @@ public class FlexiCurveGizmoEditor : Editor {
 
         FlexiCurve garland = (FlexiCurve)target;
 
+        // Initializing
+        if (garland.Filter == null) garland.TryGetComponent(out garland.Filter);
+        if (garland.Renderer == null) garland.TryGetComponent(out garland.Renderer);
+
+        if (garland.Filter != null && garland.Filter.sharedMesh == null) {
+            garland.Filter.sharedMesh = new Mesh();
+            garland.Filter.sharedMesh.name = $"FlexiCurve_{Random.Range(int.MinValue, int.MaxValue)}";
+            garland.OnValidate();
+        }
+
+        if (garland.IsValidated && EditorApplication.timeSinceStartup - garland.LastTimeValidated > 1f) {
+            garland.IsValidated = false;
+            garland.SaveMesh();
+        }
+
         HandleUtility.AddDefaultControl(GUIUtility.GetControlID(FocusType.Passive));
 
         // Limiting _gizmoID just in case 

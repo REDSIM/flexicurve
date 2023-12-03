@@ -11,6 +11,7 @@ public class FlexiCurve : MonoBehaviour {
     public FlexiCurvePreset CurvePreset;
 
     [Header("Curve Mesh")]
+    public bool GenerateWires = true;
     [Min(0.05f)] public float Spacing = 0.1f;
     [Range(0, 1)] public float Decimatation = 0.15f;
     [Min(0.001f)] public float Radius = 0.01f;
@@ -22,6 +23,8 @@ public class FlexiCurve : MonoBehaviour {
     [Min(0.05f)] public float ElementsSpacing = 0.2f;
     [Range(0, 1f)] public float DirectionRandomization = 0.3f;
     public bool RandomizeRotation = true;
+    public bool GeneratePerElementWires = true;
+    public float ElementOffset = 0.1f;
 
     [Header("Other Settings")]
     [Range(0, 0.9f)] public float LightmapPadding = 0.1f;
@@ -33,14 +36,16 @@ public class FlexiCurve : MonoBehaviour {
 
     public WireMesh[] WireSegments {
         get {
+#if UNITY_EDITOR
             if (_wireSegments == null) OnValidate();
+#endif
             return _wireSegments;
         }
     }
     private WireMesh[] _wireSegments;
 
-    private MeshFilter _filter;
-    private MeshRenderer _renderer;
+    [HideInInspector] public MeshFilter Filter;
+    [HideInInspector] public MeshRenderer Renderer;
 
     private List<Vector3> _vertices = new List<Vector3>();
     private List<Vector3> _normals = new List<Vector3>();
@@ -50,18 +55,22 @@ public class FlexiCurve : MonoBehaviour {
 
     private int _seed;
 
+    public double LastTimeValidated => _lastTimeValidated;
     private double _lastTimeValidated = 0;
-    private bool _validated = false;
+
+    [HideInInspector] public bool IsValidated = false;
 
     private float _decimate => Mathf.LerpUnclamped(0f, 0.01f, Decimatation); // Actual decimation level
 
     [HideInInspector] public FlexiCurvePreset _curvePresetPrev = null; // Previous curve presed used, for comparison
 
+#if UNITY_EDITOR
     public void Setup(FlexiCurvePreset preset) {
 
         if (preset == null) return;
 
         // Curve Mesh
+        GenerateWires = preset.GenerateWires;
         Spacing = preset.Spacing;
         Decimatation = preset.Decimatation;
         Radius = preset.Radius;
@@ -73,10 +82,12 @@ public class FlexiCurve : MonoBehaviour {
         ElementsSpacing = preset.ElementsSpacing;
         DirectionRandomization = preset.DirectionRandomization;
         RandomizeRotation = preset.RandomizeRotation;
+        GeneratePerElementWires = preset.GeneratePerElementWires;
+        ElementOffset = preset.ElementOffset;
 
         // Preset Template
-        if (_renderer == null || preset.Material == null) return;
-        _renderer.sharedMaterial = preset.Material;
+        if (Renderer == null || preset.Material == null) return;
+        Renderer.sharedMaterial = preset.Material;
 
     }
 
@@ -86,17 +97,25 @@ public class FlexiCurve : MonoBehaviour {
         if(!ReferenceEquals(CurvePreset, _curvePresetPrev)) {
             // Undo
             Undo.RecordObject(this, "Changing FlexiCurve Preset");
-            if(_renderer != null && CurvePreset.Material != null) Undo.RecordObject(_renderer, "Changing FlexiCurve Material");
+            if(CurvePreset != null && Renderer != null && CurvePreset.Material != null) Undo.RecordObject(Renderer, "Changing FlexiCurve Material");
             // Setup
             _curvePresetPrev = CurvePreset;
             Setup(CurvePreset);
         }
 
-        if (_filter == null) return;
+        if (Filter == null) return;
         _lastTimeValidated = EditorApplication.timeSinceStartup;
-        _validated = true;
+        IsValidated = true;
 
-        if (Points.Length < 2) return;
+        if (Points == null || Points.Length < 2) {
+            Points = new Vector3[] {
+                new Vector3(0, 0, 1),
+                new Vector3 (1, 0, 0)
+            };
+            Sags = new float[] {
+                -0.25f
+            };
+        }
 
         _vertices.Clear();
         _normals.Clear();
@@ -121,169 +140,216 @@ public class FlexiCurve : MonoBehaviour {
         _wireSegments = new WireMesh[Sags.Length];
 
         // Defining variables before multiple loops
-        float lampAngle = 0; // Random agle of the lamp
-        float lampAngleNew = 0; // Random agle of the lamp, but a value to compare with
-        Quaternion lampWireRot; // Rotation to rotate a lamp around wire
+        float elementAngle = 0; // Random agle of the lamp
+        float elementAngleNew = 0; // Random agle of the lamp, but a value to compare with
+        Quaternion elementWireRot; // Rotation to rotate a lamp around wire
         Vector3 wireDir; // Direction the wire facing to
         Quaternion lampAxisRot; // Rotation to rotate a lamp around it's vertical axis
         Vector3 wireTangent; // Points right
         Vector3 wireNormal; // Points down
 
-        List<Vector3>[] lampPoints = new List<Vector3>[_wireSegments.Length]; // Array of lists of lamp points. Each list for each wire segment
-        int lampsCount = 0; // Actual lamps count
+        List<Vector3>[] elementPoints = new List<Vector3>[_wireSegments.Length]; // Array of lists of lamp points. Each list for each wire segment
+        int elementCount = 0; // Actual elements count
 
-        // Creating wires
+        // Adding lamp points
         for (int i = 0; i < _wireSegments.Length; i++) {
-
-            // Recreating wire segment
             _wireSegments[i] = new WireMesh(Points[i], Points[i + 1], Sags[i], Radius, Spacing, Edges, _decimate, true);
-            _wireSegments[i].Recalculate(offset);
-
-            // Creating wires
-            _vertices.AddRange(_wireSegments[i].Vertices);
-            _normals.AddRange(_wireSegments[i].Normals);
-            _triangles.AddRange(_wireSegments[i].Triangles);
-            _uv0.AddRange(_wireSegments[i].UV0);
-
-            // Adding lamp points
-            if (Element != null) {
-                lampPoints[i] = new List<Vector3>();
-                lampPoints[i].AddRange(_wireSegments[i].Curve.GetUniformPointArray(ElementsSpacing));
-                if(lampPoints[i].Count > 2) lampsCount += lampPoints[i].Count - 2;
-            }
-
-            offset = _vertices.Count;
-
+            elementPoints[i] = new List<Vector3>();
+            elementPoints[i].AddRange(_wireSegments[i].Curve.GetUniformPointArray(ElementsSpacing));
+            if (elementPoints[i].Count > 2) elementCount += elementPoints[i].Count - 2;
         }
 
         // Calculated data required for generating lightmap UVs
-        int uvIslandsCount = lampsCount + _wireSegments.Length; // Lightmap UV will consist of this square tiles count
+        int uvIslandsCount = elementCount + (GenerateWires ? _wireSegments.Length : 0); // Lightmap UV will consist of this square tiles count
         int uvSideSize = (int)Mathf.Ceil(Mathf.Sqrt(uvIslandsCount)); // Lightmap UV is always consists of squars. This is the squares count of a one side of uv
 
-        // Generating lightmap uv for wire segments
-        for (int i = 0; i < _wireSegments.Length; i++) {
-            for(int u = 0; u < _wireSegments[i].UV1.Length; u++) {
-                Vector2 shift = new Vector2(((float) i % uvSideSize + LightmapPadding / 2) / uvSideSize, (Mathf.Floor((float) i / uvSideSize) + LightmapPadding / 2) / uvSideSize);
-                _uv1.Add(shift + _wireSegments[i].UV1[u] * (1 - LightmapPadding) / uvSideSize);
-            }
-        }
+        if (GenerateWires) {
 
-        // Buffering mesh data
-        var elementVertices = Element.vertices;
-        var elementNormals = Element.normals;
-        var elementTriangles = Element.triangles;
-        var elementUV = Element.uv;
-        var elementUV2 = Element.uv2;
+            // Creating wires
+            for (int i = 0; i < _wireSegments.Length; i++) {
 
-        // Current element id we are working with
-        int elementId = 0;
+                // Recreating wire segment
+                
+                _wireSegments[i].Recalculate(offset);
 
-        // Scattering elements
-        for (int i = 0; i < lampPoints.Length; i++) {
+                // Creating wires
+                _vertices.AddRange(_wireSegments[i].Vertices);
+                _normals.AddRange(_wireSegments[i].Normals);
+                _triangles.AddRange(_wireSegments[i].Triangles);
+                _uv0.AddRange(_wireSegments[i].UV0);
 
-            lampAngle = 0; // Reset old element angle for every wire segment
-            int count = lampPoints[i].Count - 1;
-
-            // Individual elements
-            for (int l = 1; l < count; l++) {
-
-                _seed = RandomSeed + i * 5000 + l * 50; // Shift seed for every wire segment and element
-                wireDir = Vector3.Normalize(lampPoints[i][l + 1] - lampPoints[i][l - 1]); // Direction, the wire is going to
-
-                // Calculated wire directions
-                wireTangent = Vector3.Cross(Vector3.up, wireDir).normalized;
-                wireNormal = Vector3.Cross(wireTangent, wireDir).normalized;
-                lampWireRot = Quaternion.AngleAxis(Vector3.SignedAngle(Vector3.down, wireNormal, wireTangent), wireTangent);
-
-                // Element axis rotation 
-                lampAxisRot = RandomizeRotation ? Quaternion.AngleAxis(Utils.RandomAngle(_seed), Vector3.up) : Quaternion.FromToRotation(Vector3.right, new Vector3(wireDir.x, 0, wireDir.z).normalized);
-
-                // Element wire rotation based on selective pseudo random
-                if (DirectionRandomization > 0) {
-                    do { lampAngleNew = Utils.RandomAngle(_seed + 1); _seed++; }
-                    while (Mathf.DeltaAngle(lampAngle, lampAngleNew) < 90f); // If alsost the same angle as before, rerandom
-                    lampAngle = lampAngleNew;
-                    lampWireRot = Quaternion.Slerp(lampWireRot, Quaternion.AngleAxis(lampAngleNew, wireDir) * lampWireRot, DirectionRandomization);
-                }
-
-                // Lightmap UV shift
-                Vector2 shift = new Vector2((float)((float)(elementId + _wireSegments.Length) % uvSideSize + LightmapPadding / 2) / uvSideSize, (float)(Mathf.Floor((float)(elementId + _wireSegments.Length) / uvSideSize) + LightmapPadding / 2) / uvSideSize);
-
-
-                // Generating Vertices and UV
-                for (int v = 0; v < Element.vertexCount; v++) {
-
-                    // Vertices
-                    _vertices.Add((lampWireRot * (lampAxisRot * elementVertices[v])) * ElementsScale + lampPoints[i][l]);
-
-                    // Normals
-                    _normals.Add(lampWireRot * (lampAxisRot * elementNormals[v]));
-
-                    // Regular UV
-                    if (elementUV.Length > 0) {
-                        float glowShift = lampsCount == 0 ? 0 : (elementId + 0.5f) / lampsCount; // Offsetting uv to make lamps glow one after another
-                        _uv0.Add(new Vector4(elementUV[v].x, elementUV[v].y, glowShift, glowShift));
-                    } else {
-                        _uv0.Add(Vector4.zero);
-                    }
-
-                    // Lightmap UV
-                    if (elementUV2.Length > 0) _uv1.Add(shift + elementUV2[v] * (1 - LightmapPadding) / uvSideSize);
-                    else _uv1.Add(shift);
-
-                }
-
-                // Triangles
-                for (int t = 0; t < elementTriangles.Length; t++) {
-                    _triangles.Add(elementTriangles[t] + offset);
-                }
-
-                elementId++; // Now incrementing the current element id
+                
 
                 offset = _vertices.Count;
 
             }
 
+            // Generating lightmap uv for wire segments
+            for (int i = 0; i < _wireSegments.Length; i++) {
+                for(int u = 0; u < _wireSegments[i].UV1.Length; u++) {
+                    Vector2 shift = new Vector2(((float) i % uvSideSize + LightmapPadding / 2) / uvSideSize, (Mathf.Floor((float) i / uvSideSize) + LightmapPadding / 2) / uvSideSize);
+                    _uv1.Add(shift + _wireSegments[i].UV1[u] * (1 - LightmapPadding) / uvSideSize);
+                }
+            }
+
         }
 
-        _filter.sharedMesh.Clear();
+        if (Element != null) {
+
+            // Buffering mesh data
+            var elementVertices = Element.vertices;
+            var elementNormals = Element.normals;
+            var elementTriangles = Element.triangles;
+            var elementUV = Element.uv;
+            var elementUV2 = Element.uv2;
+
+            // Current element id we are working with
+            int elementId = 0;
+
+            // Calculating X-UV
+            float holdingWireXUV = ElementOffset / (Mathf.PI * 2 * Radius);
+
+            // Scattering elements
+            for (int i = 0; i < elementPoints.Length; i++) {
+
+                elementAngle = 0; // Reset old element angle for every wire segment
+                int count = elementPoints[i].Count - 1;
+
+                // Individual elements
+                for (int l = 1; l < count; l++) {
+
+                    _seed = RandomSeed + i * 5000 + l * 50; // Shift seed for every wire segment and element
+                    wireDir = Vector3.Normalize(elementPoints[i][l + 1] - elementPoints[i][l - 1]); // Direction, the wire is going to
+
+                    // Calculated wire directions
+                    wireTangent = Vector3.Cross(Vector3.up, wireDir).normalized;
+                    wireNormal = Vector3.Cross(wireTangent, wireDir).normalized;
+                    elementWireRot = Quaternion.AngleAxis(Vector3.SignedAngle(Vector3.down, wireNormal, wireTangent), wireTangent);
+
+                    // Element axis rotation 
+                    lampAxisRot = RandomizeRotation ? Quaternion.AngleAxis(Utils.RandomAngle(_seed), Vector3.up) : Quaternion.FromToRotation(Vector3.right, new Vector3(wireDir.x, 0, wireDir.z).normalized);
+
+                    // Element wire rotation based on selective pseudo random
+                    if (DirectionRandomization > 0) {
+                        do { elementAngleNew = Utils.RandomAngle(_seed + 1); _seed++; }
+                        while (Mathf.DeltaAngle(elementAngle, elementAngleNew) < 90f); // If alsost the same angle as before, rerandom
+                        elementAngle = elementAngleNew;
+                        elementWireRot = Quaternion.Slerp(elementWireRot, Quaternion.AngleAxis(elementAngleNew, wireDir) * elementWireRot, DirectionRandomization);
+                    }
+
+                    // Lightmap UV shift
+                    Vector2 shift = new Vector2((float)((float)(elementId + (GenerateWires ? _wireSegments.Length : 0)) % uvSideSize + LightmapPadding / 2) / uvSideSize, (float)(Mathf.Floor((float)(elementId + (GenerateWires ? _wireSegments.Length : 0)) / uvSideSize) + LightmapPadding / 2) / uvSideSize);
+
+                    // Generating Per Element Wires and UV
+                    if (GeneratePerElementWires) {
+
+                        Vector3 from = elementPoints[i][l]; // Position wire holder goes from
+                        Vector3 to = from + (elementWireRot * Vector3.down) * ElementOffset; // Position wire holder goes to
+                        int edgesExtra = Edges + 1;
+                        // Upper part
+                        for (int v = 0; v < edgesExtra; v++) {
+
+                            int vId = v == Edges ? 0 : v;
+                            float holdingWireYUV = v == Edges ? 1 : (float)vId / Edges;
+                            
+                            float angle = 2 * Mathf.PI * vId / Edges;
+                            Vector3 vert = Utils.PointOnCircle(from, Radius, elementWireRot * Vector3.down, elementWireRot * Vector3.right, angle);
+                            _vertices.Add(vert); // Filling vertices array
+                            _normals.Add((vert - from).normalized);
+                            _uv0.Add(new Vector4(0, holdingWireYUV, 0, 0));
+                            _uv1.Add(shift);
+
+                            int vv = v + 1;
+
+                            if (v < Edges) {
+                                // First triangle
+                                _triangles.Add(offset + v);
+                                _triangles.Add(offset + vv);
+                                _triangles.Add(offset + edgesExtra + v);
+                                // Second triangle
+                                _triangles.Add(offset + vv);
+                                _triangles.Add(offset + edgesExtra + vv);
+                                _triangles.Add(offset + edgesExtra + v);
+                            }
+
+                        }
+                        offset = _vertices.Count;
+
+                        // Lower part
+                        for (int v = 0; v < edgesExtra; v++) {
+
+                            int vId = v == Edges ? 0 : v;
+                            float holdingWireYUV = v == Edges ? 1 : (float)vId / Edges;
+                            
+                            float angle = 2 * Mathf.PI * vId / Edges;
+                            Vector3 vert = Utils.PointOnCircle(to, Radius, elementWireRot * Vector3.down, elementWireRot * Vector3.right, angle);
+                            _vertices.Add(vert); // Filling vertices array
+                            _normals.Add((vert - to).normalized);
+                            _uv0.Add(new Vector4(holdingWireXUV, holdingWireYUV, 0, 0));
+                            _uv1.Add(shift);
+                        }
+                        
+                    }
+
+                    offset = _vertices.Count;
+
+                    // Generating Vertices and UV
+                    for (int v = 0; v < Element.vertexCount; v++) {
+
+                        // Vertices
+                        _vertices.Add((elementWireRot * (lampAxisRot * elementVertices[v] * ElementsScale + new Vector3(0, -ElementOffset, 0))) + elementPoints[i][l]);
+
+                        // Normals
+                        _normals.Add(elementWireRot * (lampAxisRot * elementNormals[v]));
+
+                        // Regular UV
+                        if (elementUV.Length > 0) {
+                            float glowShift = elementCount == 0 ? 0 : (elementId + 0.5f) / elementCount; // Offsetting uv to make lamps glow one after another
+                            _uv0.Add(new Vector4(elementUV[v].x, elementUV[v].y, glowShift, glowShift));
+                        } else {
+                            _uv0.Add(Vector4.zero);
+                        }
+
+                        // Lightmap UV
+                        if (elementUV2.Length > 0) _uv1.Add(shift + elementUV2[v] * (1 - LightmapPadding) / uvSideSize);
+                        else _uv1.Add(shift);
+
+                    }
+
+                    // Triangles
+                    for (int t = 0; t < elementTriangles.Length; t++) {
+                        _triangles.Add(elementTriangles[t] + offset);
+                    }
+
+                    elementId++; // Now incrementing the current element id
+
+                    offset = _vertices.Count;
+
+                }
+
+            }
+        }
+
+        Filter.sharedMesh.Clear();
         // Will mesh use UInt16 format, or UInt32?
         if (_vertices.Count > 65535) {
-            _filter.sharedMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+            Filter.sharedMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
         } else {
-            _filter.sharedMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt16;
+            Filter.sharedMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt16;
         }
-        _filter.sharedMesh.vertices = _vertices.ToArray();
-        _filter.sharedMesh.triangles = _triangles.ToArray();
-        _filter.sharedMesh.normals = _normals.ToArray();
-        _filter.sharedMesh.SetUVs(0, _uv0.ToArray());
-        _filter.sharedMesh.SetUVs(1, _uv1.ToArray());
-        _filter.sharedMesh.RecalculateBounds();
-
-    }
-
-    private void OnDrawGizmos() {
-
-        if (_filter == null) TryGetComponent(out _filter);
-        if (_renderer == null) TryGetComponent(out _renderer);
-
-        if (_filter != null && _filter.sharedMesh == null) {
-            _filter.sharedMesh = new Mesh();
-            _filter.sharedMesh.name = $"FlexiCurve_{Random.Range(int.MinValue, int.MaxValue)}";
-            OnValidate();
-        }
-
-        if (_validated && EditorApplication.timeSinceStartup - _lastTimeValidated > 1f) {
-            _validated = false;
-            SaveMesh();
-        }
+        Filter.sharedMesh.vertices = _vertices.ToArray();
+        Filter.sharedMesh.triangles = _triangles.ToArray();
+        Filter.sharedMesh.normals = _normals.ToArray();
+        Filter.sharedMesh.SetUVs(0, _uv0.ToArray());
+        Filter.sharedMesh.SetUVs(1, _uv1.ToArray());
+        Filter.sharedMesh.RecalculateBounds();
 
     }
 
     public void SaveMesh() {
-        if (_filter == null || _filter.sharedMesh == null) return;
+        if (Filter == null || Filter.sharedMesh == null) return;
 
-        Mesh mesh = _filter.sharedMesh;
+        Mesh mesh = Filter.sharedMesh;
 
         string path = $"Assets/FlexiCurveMeshes/{mesh.name}.asset";
 
@@ -299,5 +365,6 @@ public class FlexiCurve : MonoBehaviour {
         AssetDatabase.SaveAssets();
 
     }
+#endif
 
 }
