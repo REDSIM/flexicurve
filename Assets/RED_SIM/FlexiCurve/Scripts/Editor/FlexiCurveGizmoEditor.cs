@@ -15,7 +15,8 @@ public class FlexiCurveGizmoEditor : Editor {
     private bool _isGrab = false;
     private bool _isCtrlPressed = false;
 
-    private void OnSceneGUI() {
+    public override void OnInspectorGUI() {
+        base.OnInspectorGUI();
 
         FlexiCurve garland = (FlexiCurve)target;
 
@@ -28,6 +29,12 @@ public class FlexiCurveGizmoEditor : Editor {
             garland.Filter.sharedMesh.name = $"FlexiCurve_{Random.Range(int.MinValue, int.MaxValue)}";
             garland.OnValidate();
         }
+        
+    }
+
+    private void OnSceneGUI() {
+
+        FlexiCurve garland = (FlexiCurve)target;
 
         if (garland.IsValidated && EditorApplication.timeSinceStartup - garland.LastTimeValidated > 1f) {
             garland.IsValidated = false;
