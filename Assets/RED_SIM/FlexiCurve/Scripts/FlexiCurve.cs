@@ -104,6 +104,7 @@ public class FlexiCurve : MonoBehaviour {
         }
 
         if (Filter == null) return;
+
         _lastTimeValidated = EditorApplication.timeSinceStartup;
         IsValidated = true;
 
@@ -331,6 +332,7 @@ public class FlexiCurve : MonoBehaviour {
         }
 
         Filter.sharedMesh.Clear();
+
         // Will mesh use UInt16 format, or UInt32?
         if (_vertices.Count > 65535) {
             Filter.sharedMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
