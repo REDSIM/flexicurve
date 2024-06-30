@@ -1,4 +1,4 @@
-FlexiCurve by RED_SIM v.1.0.2
+FlexiCurve by RED_SIM v.1.0.3
 
 This is a free Asset Package.
 I'll be very happy if you decide to support me with a patreon subscription! There's a bunch of other cool assets you will get for that, including extra FlexiCurve presets. <3
@@ -17,3 +17,6 @@ UPDATE 1.0.1 (04.12.2023) Changes:
 
 UPDATE 1.0.2 (05.12.2023) Changes:
 - Duplication works correctly now. It now creates a new geometry file instead of referencing the old one after duplication.
+
+UPDATE 1.0.3 (08.12.2023) Changes:
+- Previous fix caused another bug, when a new mesh file was created every time you select a FlexiCurve object. Fixed now!
