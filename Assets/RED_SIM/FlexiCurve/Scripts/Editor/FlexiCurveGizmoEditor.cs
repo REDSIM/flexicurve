@@ -15,16 +15,14 @@ public class FlexiCurveGizmoEditor : Editor {
     private bool _isGrab = false;
     private bool _isCtrlPressed = false;
 
-    private int lastInstanceID = 0;
-
     public override void OnInspectorGUI() {
         base.OnInspectorGUI();
 
         FlexiCurve garland = (FlexiCurve)target;
 
-        if (garland.GetInstanceID() != lastInstanceID) {
+        if (garland.GetInstanceID() != garland.LastInstanceID) {
             // The instance ID changed, duplication or other change
-            lastInstanceID = garland.GetInstanceID();
+            garland.LastInstanceID = garland.GetInstanceID();
             garland.Filter.sharedMesh = null;
         }
 
@@ -42,9 +40,9 @@ public class FlexiCurveGizmoEditor : Editor {
 
     private void OnSceneGUI() {
 
-        if(lastInstanceID == 0) lastInstanceID = target.GetInstanceID();
-
         FlexiCurve garland = (FlexiCurve)target;
+
+        if (garland.LastInstanceID == 0) garland.LastInstanceID = target.GetInstanceID();
 
         if (garland.IsValidated && EditorApplication.timeSinceStartup - garland.LastTimeValidated > 1f) {
             garland.IsValidated = false;

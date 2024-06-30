@@ -34,6 +34,8 @@ public class FlexiCurve : MonoBehaviour {
     public Vector3[] Points;
     public float[] Sags;
 
+    [HideInInspector]public int LastInstanceID;
+
     public WireMesh[] WireSegments {
         get {
 #if UNITY_EDITOR
