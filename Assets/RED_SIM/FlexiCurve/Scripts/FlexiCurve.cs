@@ -35,6 +35,13 @@ public class FlexiCurve : MonoBehaviour {
     public float[] Sags;
 
     [HideInInspector]public int LastInstanceID;
+    
+    # region Used for AutoGenerate
+        [HideInInspector]public Transform _EDITOR_selectedParentTransform;
+        [HideInInspector]public int _EDITOR_curtag;
+        [HideInInspector]public float _EDITOR_sagMin = -0.5f;
+        [HideInInspector]public float _EDITOR_sagMax = -0.1f;
+    #endregion
 
     public WireMesh[] WireSegments {
         get {

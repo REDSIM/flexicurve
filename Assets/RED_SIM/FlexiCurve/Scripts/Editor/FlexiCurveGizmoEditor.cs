@@ -1,8 +1,10 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Reflection;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 [CustomEditor(typeof(FlexiCurve))]
 public class FlexiCurveGizmoEditor : Editor {
@@ -15,10 +17,88 @@ public class FlexiCurveGizmoEditor : Editor {
     private bool _isGrab = false;
     private bool _isCtrlPressed = false;
 
+    # region Used for AutoGenerate
+        private string[] _tags;
+        
+        private void DrawAutoGenerate(FlexiCurve garland)
+        {
+            GUILayout.BeginHorizontal();
+
+            _tags = UnityEditorInternal.InternalEditorUtility.tags;
+
+            string[] tags2 = new string[_tags.Length + 1];
+            tags2[0] = "Everything";
+            for (int i = 1; i < tags2.Length; i++)
+            {
+                tags2[i] = $"Use Tag: {_tags[i - 1]}";
+            }
+
+            EditorGUILayout.LabelField("Parent Object: ", GUILayout.Width(100));
+            garland._EDITOR_selectedParentTransform =
+                (Transform)EditorGUILayout.ObjectField(garland._EDITOR_selectedParentTransform, typeof(Transform));
+            garland._EDITOR_curtag = Mathf.Clamp(garland._EDITOR_curtag, 0, tags2.Length);
+            garland._EDITOR_curtag = EditorGUILayout.Popup(garland._EDITOR_curtag, tags2);
+
+            EditorGUILayout.LabelField("  Sag Min: ", GUILayout.Width(55));
+            garland._EDITOR_sagMin = EditorGUILayout.FloatField(garland._EDITOR_sagMin, GUILayout.Width(50));
+            EditorGUILayout.LabelField("Max: ", GUILayout.Width(30));
+            garland._EDITOR_sagMax = EditorGUILayout.FloatField(garland._EDITOR_sagMax, GUILayout.Width(50));
+
+            if (GUILayout.Button("Generate", GUILayout.Width(100)))
+            {
+                AutoGenerate(garland);
+            }
+
+            GUILayout.EndHorizontal();
+        }
+        private void AutoGenerate(FlexiCurve garland)
+        {
+            Undo.RecordObject(garland, $"Auto Generate Points");
+            Transform[] __tempPointArray = garland._EDITOR_selectedParentTransform.GetComponentsInChildren<Transform>();
+            if (garland._EDITOR_curtag == 0)
+            {
+                garland.Points = new Vector3[__tempPointArray.Length];
+                for (int i = 0; i < garland.Points.Length; i++)
+                {
+                    garland.Points[i] = garland.transform.InverseTransformPoint(__tempPointArray[i].position);
+                }
+            }
+            else
+            {
+                garland.Points = new Vector3[0];
+                for (int i = 0; i < __tempPointArray.Length; i++)
+                {
+                    if (__tempPointArray[i].CompareTag(_tags[garland._EDITOR_curtag - 1]))
+                    {
+                        Array.Resize(ref garland.Points, garland.Points.Length + 1);
+                        garland.Points[garland.Points.Length - 1] =
+                            garland.transform.InverseTransformPoint(__tempPointArray[i].position);
+                    }
+                }
+            }
+
+            garland.Sags = new float[garland.Points.Length];
+            for (int i = 0; i < garland.Sags.Length; i++)
+            {
+                garland.Sags[i] = Random.Range(garland._EDITOR_sagMin, garland._EDITOR_sagMax);
+            }
+
+            garland.Filter.sharedMesh = new Mesh();
+            garland.Filter.sharedMesh.name = $"FlexiCurve_{Random.Range(int.MinValue, int.MaxValue)}";
+            garland.OnValidate();
+            PrefabUtility.RecordPrefabInstancePropertyModifications(garland);
+        }
+        
+    #endregion
+
     public override void OnInspectorGUI() {
+        FlexiCurve garland = (FlexiCurve)target;
+        
+        DrawAutoGenerate(garland);
+
         base.OnInspectorGUI();
 
-        FlexiCurve garland = (FlexiCurve)target;
+        
 
         if (garland.GetInstanceID() != garland.LastInstanceID) {
             // The instance ID changed, duplication or other change
@@ -36,7 +116,12 @@ public class FlexiCurveGizmoEditor : Editor {
             garland.OnValidate();
         }
         
+
     }
+
+    
+
+    
 
     private void OnSceneGUI() {
 
