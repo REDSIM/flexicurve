@@ -19,4 +19,11 @@ UPDATE 1.0.2 (05.12.2023) Changes:
 - Duplication works correctly now. It now creates a new geometry file instead of referencing the old one after duplication.
 
 UPDATE 1.0.3 (08.12.2023) Changes:
-- Previous fix caused another bug, when a new mesh file was created every time you select a FlexiCurve object. Fixed now!
+- Previous fix caused another bug, when a new mesh file was created every time you select a FlexiCurve object. Fixed now
+
+UPDATE 1.1.0 (07.11.2024) Changes:
+- updated development unity version to 2022.3.22f1
+- added auto generation
+- namespaced all scripts to `flexicurve`
+- migrated to VPM package
+-- changes made by UdonVR
