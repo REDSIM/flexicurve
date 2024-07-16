@@ -1,0 +1,12 @@
+{
+  "name": "com.redsim.flexicurve",
+  "displayName": "FlexiCurve",
+  "version": "1.1.0",
+  "unity": "2022.3",
+  "description": "Unity asset for procedural generating curve-based meshes, such as fairy lights, garlands, wires and more! This asset is perfect to decorate your VRChat worlds without going to Blender or any other 3rd party software.",
+  "author": {
+    "name": "RED_SIM",
+    "email": "",
+    "url": "https://www.patreon.com/posts/flexicurve-fairy-94014721"
+  }
+}
