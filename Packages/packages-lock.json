@@ -99,7 +99,7 @@
       }
     },
     "red.sim.flexicurve": {
-      "version": "file:com.redsim.flexicurve",
+      "version": "file:red.sim.flexicurve",
       "depth": 0,
       "source": "embedded",
       "dependencies": {}
