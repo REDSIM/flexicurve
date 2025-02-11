@@ -546,7 +546,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 803080230}
-  m_Mesh: {fileID: 4300000, guid: 7226b75b7f16d31448f86f75ccdfb393, type: 2}
+  m_Mesh: {fileID: 4300000, guid: b467d92a668ebac48b3a4b4b72983066, type: 2}
 --- !u!114 &803080233
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -562,7 +562,7 @@ MonoBehaviour:
   CurvePreset: {fileID: 11400000, guid: 0ab8481dd7ec91443a890a76f7744bff, type: 2}
   GenerateWires: 1
   Spacing: 0.12
-  Decimatation: 0.056
+  Decimatation: 0.055
   Radius: 0.005
   Edges: 3
   Element: {fileID: -2182254410458406269, guid: 713f3e3ee6216794ca178394eae8a9d9,
@@ -592,10 +592,14 @@ MonoBehaviour:
   - -3.137333
   - -3.1342335
   - -2.798813
-  LastInstanceID: 21696
+  LastInstanceID: 21996
+  _editorSelectedParentTransform: {fileID: 0}
+  _editorCurtag: 0
+  _editorSagMin: -0.5
+  _editorSagMax: -0.1
   Filter: {fileID: 803080232}
   Renderer: {fileID: 803080231}
-  IsValidated: 1
+  IsValidated: 0
   _curvePresetPrev: {fileID: 11400000, guid: 0ab8481dd7ec91443a890a76f7744bff, type: 2}
 --- !u!4 &803080234
 Transform:
