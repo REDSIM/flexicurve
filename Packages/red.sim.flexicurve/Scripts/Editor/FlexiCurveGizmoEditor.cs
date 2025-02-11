@@ -24,8 +24,10 @@ namespace Flexicurve {
         private string[] _tags;
 
         private void DrawAutoGenerate(FlexiCurve garland) {
-            
-            GUILayout.BeginHorizontal();
+
+            EditorGUILayout.Space(5f);
+
+            EditorGUILayout.BeginHorizontal();
 
             _tags = UnityEditorInternal.InternalEditorUtility.tags;
 
@@ -35,17 +37,23 @@ namespace Flexicurve {
                 tags2[i] = $"Use Tag: {_tags[i - 1]}";
             }
 
-            EditorGUILayout.LabelField("Parent Object: ", GUILayout.Width(100));
+            EditorGUILayout.LabelField("Parent: ", GUILayout.Width(45));
             garland._editorSelectedParentTransform = (Transform)EditorGUILayout.ObjectField(garland._editorSelectedParentTransform, typeof(Transform), true);
             garland._editorCurtag = Mathf.Clamp(garland._editorCurtag, 0, tags2.Length);
             garland._editorCurtag = EditorGUILayout.Popup(garland._editorCurtag, tags2);
 
-            EditorGUILayout.LabelField("  Sag Min: ", GUILayout.Width(55));
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.Space(0.1f);
+
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("Sag Min: ", GUILayout.Width(55));
             garland._editorSagMin = EditorGUILayout.FloatField(garland._editorSagMin, GUILayout.Width(50));
+            EditorGUILayout.Space(0.01f);
             EditorGUILayout.LabelField("Max: ", GUILayout.Width(30));
             garland._editorSagMax = EditorGUILayout.FloatField(garland._editorSagMax, GUILayout.Width(50));
-
-            if (GUILayout.Button("Generate", GUILayout.Width(100))) AutoGenerate(garland);
+            EditorGUILayout.Space(0.01f);
+            if (GUILayout.Button("Generate")) AutoGenerate(garland);
 
             GUILayout.EndHorizontal();
 
@@ -84,10 +92,25 @@ namespace Flexicurve {
 #endregion
 
         public override void OnInspectorGUI() {
-            
+
+            serializedObject.Update();
+
             FlexiCurve garland = (FlexiCurve)target;
+
             DrawAutoGenerate(garland);
-            base.OnInspectorGUI();
+
+            string polyCount = "none";
+
+            if (garland.Filter != null && garland.Filter.sharedMesh != null) {
+                polyCount = "" + (garland.Filter.sharedMesh.triangles.Length / 3);
+            }
+            
+            EditorGUILayout.Space(10f);
+
+            EditorGUILayout.HelpBox($" Generated mesh poly-count: {polyCount}", MessageType.Info);
+
+            // Works just like base.OnInspectorGUI(); but excluding m_Script field
+            DrawPropertiesExcluding(serializedObject, "m_Script");
 
             if (garland.GetInstanceID() != garland.LastInstanceID) {
                 // The instance ID changed, duplication or other change
@@ -104,6 +127,8 @@ namespace Flexicurve {
                 garland.Filter.sharedMesh.name = $"FlexiCurve_{Random.Range(int.MinValue, int.MaxValue)}";
                 garland.OnValidate();
             }
+
+            serializedObject.ApplyModifiedProperties();
 
         }
 

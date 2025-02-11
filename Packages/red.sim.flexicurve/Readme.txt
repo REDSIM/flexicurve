@@ -1,4 +1,4 @@
-FlexiCurve by RED_SIM v.1.1.2
+FlexiCurve by RED_SIM v.1.1.3
 GitHub: https://github.com/REDSIM/flexicurve/
 
 This is a free open source Asset Package.
@@ -10,18 +10,16 @@ More info and instructions here: https://www.patreon.com/posts/94014721/
 
 Patreon: https://www.patreon.com/red_sim
 
+UPDATE 1.1.3 (12.02.2025) Changes:
+- Inspector GUI improved
+- Poly-count info in inspector GUI
 
-UPDATE 1.0.0 (04.12.2023) Changes:
-- Release!
+UPDATE 1.1.2 (11.02.2025) Changes:
+- Code style and git page improved
 
-UPDATE 1.0.1 (04.12.2023) Changes:
-- Missing MeshFilter mesh bug fixed. Now always auto-creates new flexicurve meshes!
-
-UPDATE 1.0.2 (05.12.2023) Changes:
-- Duplication works correctly now. It now creates a new geometry file instead of referencing the old one after duplication.
-
-UPDATE 1.0.3 (08.12.2023) Changes:
-- Previous fix caused another bug, when a new mesh file was created every time you select a FlexiCurve object. Fixed now
+UPDATE 1.1.1 (11.02.2025) Changes:
+- assembly defs fixed
+-- changes made by UdonVR
 
 UPDATE 1.1.0 (07.11.2024) Changes:
 - updated development unity version to 2022.3.22f1
@@ -30,9 +28,14 @@ UPDATE 1.1.0 (07.11.2024) Changes:
 - migrated to VPM package
 -- changes made by UdonVR
 
-UPDATE 1.1.1 (11.02.2025) Changes:
-- assembly defs fixed
--- changes made by UdonVR
+UPDATE 1.0.3 (08.12.2023) Changes:
+- Previous fix caused another bug, when a new mesh file was created every time you select a FlexiCurve object. Fixed now
 
-UPDATE 1.1.2 (11.02.2025) Changes:
-- Code style and git page improved
+UPDATE 1.0.2 (05.12.2023) Changes:
+- Duplication works correctly now. It now creates a new geometry file instead of referencing the old one after duplication.
+
+UPDATE 1.0.1 (04.12.2023) Changes:
+- Missing MeshFilter mesh bug fixed. Now always auto-creates new flexicurve meshes!
+
+UPDATE 1.0.0 (04.12.2023) Changes:
+- Release!
