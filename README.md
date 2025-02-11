@@ -35,16 +35,17 @@ Full Flexicurve usage explained here: **[Flexicurve video tutorial](https://www.
 
 This is not a skinned mesh made of bones or blend shapes, this is a static mesh, which can be batched, lightmapped and can only be changed in editor.
 
-![](https://i.imgur.com/nUnI35z.gif)
+![](https://raw.githubusercontent.com/REDSIM/flexicurve/refs/heads/main/ReadmePreviews/preview0.webp)
 
 You can use included presets or even create your own to fast switch between different types of fairy lights.
 
-![](https://i.imgur.com/AX1hPpK.gif)
+![](https://raw.githubusercontent.com/REDSIM/flexicurve/refs/heads/main/ReadmePreviews/preview1.webp)
 
 You can fast add new points to curves by **LMB** clicking at the middle gizmo with the **Ctrl** button held, or fast remove points by clicking on existing ones with **Ctrl** button held too.
 
-![](https://i.imgur.com/wmKmsmm.gif)
+![](https://raw.githubusercontent.com/REDSIM/flexicurve/refs/heads/main/ReadmePreviews/preview2.webp)
 
 You can fast snap new points to world geometry by **LMB** clicking with the **Ctrl** button held.
 
 There are lots of ways to customize your procedural curve mesh, including direction randomizations, scales, offsets, decimation and more.
+
