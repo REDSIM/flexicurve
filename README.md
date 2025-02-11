@@ -1,9 +1,9 @@
-# Flexicurve
+# FlexiCurve
 
 This is a free open-source Unity asset for procedural generating curve-based meshes, such as fairy lights, garlands, wires and more. This asset is perfect to decorate scenes without going to Blender or any other 3rd party software.
 
 If you liked this asset, I would be very happy if you **[Support me on Patreon](https://www.patreon.com/red_sim/ "Support me on Patreon")**
-There is a bunch of other cool assets you will get there, including extra Flexicurve presets.
+There is a bunch of other cool assets you will get there, including extra FlexiCurve presets.
 
 ## Main features
 - Creating fairy lights
@@ -29,7 +29,7 @@ There is a bunch of other cool assets you will get there, including extra Flexic
 
 Generated mesh stored in *Assets/FlexiCurveMeshes/*
 
-Full Flexicurve usage explained here: **[Flexicurve video tutorial](https://www.youtube.com/watch?v=Fiy1kxU3ymo "Video tutorial")**
+Full FlexiCurve usage explained here: **[FlexiCurve video tutorial](https://www.youtube.com/watch?v=Fiy1kxU3ymo "Video tutorial")**
 
 ## Asset preview
 

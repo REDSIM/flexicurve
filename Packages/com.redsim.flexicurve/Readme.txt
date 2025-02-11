@@ -1,6 +1,7 @@
-FlexiCurve by RED_SIM v.1.0.3
+FlexiCurve by RED_SIM v.1.1.2
+GitHub: https://github.com/REDSIM/flexicurve/
 
-This is a free Asset Package.
+This is a free open source Asset Package.
 I'll be very happy if you decide to support me with a patreon subscription! There's a bunch of other cool assets you will get for that, including extra FlexiCurve presets. <3
 
 If you have any problems or questions, be free to DM me on Discord: RED_SIM
@@ -8,6 +9,7 @@ If you have any problems or questions, be free to DM me on Discord: RED_SIM
 More info and instructions here: https://www.patreon.com/posts/94014721/
 
 Patreon: https://www.patreon.com/red_sim
+
 
 UPDATE 1.0.0 (04.12.2023) Changes:
 - Release!
@@ -27,3 +29,10 @@ UPDATE 1.1.0 (07.11.2024) Changes:
 - namespaced all scripts to `flexicurve`
 - migrated to VPM package
 -- changes made by UdonVR
+
+UPDATE 1.1.1 (11.02.2025) Changes:
+- assembly defs fixed
+-- changes made by UdonVR
+
+UPDATE 1.1.2 (11.02.2025) Changes:
+- Code style and git page improved

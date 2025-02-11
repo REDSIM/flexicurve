@@ -1,11 +1,5 @@
 {
   "dependencies": {
-    "com.redsim.flexicurve": {
-      "version": "file:com.redsim.flexicurve",
-      "depth": 0,
-      "source": "embedded",
-      "dependencies": {}
-    },
     "com.unity.ai.navigation": {
       "version": "1.1.5",
       "depth": 0,
@@ -103,6 +97,12 @@
         "com.unity.modules.ui": "1.0.0",
         "com.unity.modules.imgui": "1.0.0"
       }
+    },
+    "red.sim.flexicurve": {
+      "version": "file:com.redsim.flexicurve",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
     },
     "com.unity.modules.ai": {
       "version": "1.0.0",
