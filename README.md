@@ -35,15 +35,15 @@ Full Flexicurve usage explained here: **[Flexicurve video tutorial](https://www.
 
 This is not a skinned mesh made of bones or blend shapes, this is a static mesh, which can be batched, lightmapped and can only be changed in editor.
 
-![](https://c10.patreonusercontent.com/4/patreon-media/p/post/94014721/0fca508bba4c4cef89c4974023d27a17/e30%3D/1.gif?token-time=1740528000&token-hash=cNItRAYQIcc9yvpkXWrDkEs62k_UZyiFPAhh_qiCOMM%3D)
+![](https://i.imgur.com/nUnI35z.gif)
 
 You can use included presets or even create your own to fast switch between different types of fairy lights.
 
-![](https://c10.patreonusercontent.com/4/patreon-media/p/post/94014721/2fe2373465464e31b58d53dd97ba0b00/e30%3D/1.gif?token-time=1740528000&token-hash=d3FDNhONLtuTRUhHI2whD_W7qGAqDcHgHd5O2NtYEDQ%3D)
+![](https://i.imgur.com/AX1hPpK.gif)
 
 You can fast add new points to curves by **LMB** clicking at the middle gizmo with the **Ctrl** button held, or fast remove points by clicking on existing ones with **Ctrl** button held too.
 
-![](https://c10.patreonusercontent.com/4/patreon-media/p/post/94014721/3db8f4a41bb94422a3a018846cb33207/e30%3D/1.gif?token-time=1740528000&token-hash=wdc6hVVENkAuWIPZd9detKdty1QgadouoDNotq9GwPk%3D)
+![](https://i.imgur.com/wmKmsmm.gif)
 
 You can fast snap new points to world geometry by **LMB** clicking with the **Ctrl** button held.
 
