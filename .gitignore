@@ -74,3 +74,5 @@ crashlytics-build.properties
 /[Aa]ssets/[Aa]mplifyShaderEditor/*
 /[Aa]ssets/[Aa]mplifyShaderEditor.meta
 /[Pp]rojectSettings/[Aa]mplifyShaderEditor.asset
+/[Aa]ssets/RED_SIM
+/[Aa]ssets/RED_SIM.meta
