@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "com.redsim.flexicurve": {
-      "version": "file:FlexiCurve",
+      "version": "file:com.redsim.flexicurve",
       "depth": 0,
       "source": "embedded",
       "dependencies": {}
@@ -88,9 +88,9 @@
       "depth": 0,
       "source": "registry",
       "dependencies": {
+        "com.unity.modules.audio": "1.0.0",
         "com.unity.modules.director": "1.0.0",
         "com.unity.modules.animation": "1.0.0",
-        "com.unity.modules.audio": "1.0.0",
         "com.unity.modules.particlesystem": "1.0.0"
       },
       "url": "https://packages.unity.com"
