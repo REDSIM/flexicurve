@@ -36,16 +36,13 @@ namespace Flexicurve {
         public Vector3[] Points;
         public float[] Sags;
 
-        [HideInInspector] public int LastInstanceID;
+        public long _lastInstanceID;
 
-# region Used for AutoGenerate
-
-        [HideInInspector] public Transform _editorSelectedParentTransform;
-        [HideInInspector] public int _editorCurtag;
-        [HideInInspector] public float _editorSagMin = -0.5f;
-        [HideInInspector] public float _editorSagMax = -0.1f;
-
-#endregion
+        // For Auto-generation
+        public Transform _editorSelectedParentTransform;
+        public int _editorCurtag;
+        public float _editorSagMin = -0.5f;
+        public float _editorSagMax = -0.1f;
 
         public WireMesh[] WireSegments {
             get {
@@ -346,6 +343,7 @@ namespace Flexicurve {
                 }
             }
 
+            if (Filter.sharedMesh == null) return;
             Filter.sharedMesh.Clear();
 
             // Will mesh use UInt16 format, or UInt32?

@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using UnityEditor.SearchService;
+using Object = UnityEngine.Object;
 
 namespace Flexicurve {
 
@@ -26,6 +28,8 @@ namespace Flexicurve {
         private void DrawAutoGenerate(FlexiCurve garland) {
 
             EditorGUILayout.Space(5f);
+
+            EditorGUI.BeginChangeCheck();
 
             EditorGUILayout.BeginHorizontal();
 
@@ -56,6 +60,12 @@ namespace Flexicurve {
             if (GUILayout.Button("Generate")) AutoGenerate(garland);
 
             GUILayout.EndHorizontal();
+
+            if (EditorGUI.EndChangeCheck()) {
+                Undo.RecordObject(garland, "Change FlexiCurve Properties");
+                EditorUtility.SetDirty(garland);
+                UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(UnityEditor.SceneManagement.EditorSceneManager.GetActiveScene());
+            }
 
         }
 
@@ -110,12 +120,18 @@ namespace Flexicurve {
             EditorGUILayout.HelpBox($" Generated mesh poly-count: {polyCount}", MessageType.Info);
 
             // Works just like base.OnInspectorGUI(); but excluding m_Script field
-            DrawPropertiesExcluding(serializedObject, "m_Script");
+            string[] hiddenFields = new string[] { "m_Script", "_lastInstanceID", "_editorSelectedParentTransform", "_editorCurtag", "_editorSagMin", "_editorSagMax" };
+            DrawPropertiesExcluding(serializedObject, hiddenFields);
 
-            if (garland.GetInstanceID() != garland.LastInstanceID) {
+            long uid = GetLocalID(garland.gameObject);
+
+            if (uid != garland._lastInstanceID) {
                 // The instance ID changed, duplication or other change
-                garland.LastInstanceID = garland.GetInstanceID();
+                garland._lastInstanceID = uid;
                 garland.Filter.sharedMesh = null;
+                Undo.RecordObject(garland, "Change FlexiCurve Properties");
+                EditorUtility.SetDirty(garland);
+                UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(UnityEditor.SceneManagement.EditorSceneManager.GetActiveScene());
             }
 
             // Initializing
@@ -126,6 +142,9 @@ namespace Flexicurve {
                 garland.Filter.sharedMesh = new Mesh();
                 garland.Filter.sharedMesh.name = $"FlexiCurve_{Random.Range(int.MinValue, int.MaxValue)}";
                 garland.OnValidate();
+                Undo.RecordObject(garland, "Change FlexiCurve Properties");
+                EditorUtility.SetDirty(garland);
+                UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(UnityEditor.SceneManagement.EditorSceneManager.GetActiveScene());
             }
 
             serializedObject.ApplyModifiedProperties();
@@ -136,7 +155,13 @@ namespace Flexicurve {
 
             FlexiCurve garland = (FlexiCurve)target;
 
-            if (garland.LastInstanceID == 0) garland.LastInstanceID = target.GetInstanceID();
+            if (garland._lastInstanceID == 0) {
+                garland._lastInstanceID = GetLocalID(garland.gameObject);
+                serializedObject.ApplyModifiedProperties();
+                Undo.RecordObject(garland, "Change FlexiCurve Properties");
+                EditorUtility.SetDirty(garland);
+                UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(UnityEditor.SceneManagement.EditorSceneManager.GetActiveScene());
+            }
 
             if (garland.IsValidated && EditorApplication.timeSinceStartup - garland.LastTimeValidated > 1f) {
                 garland.IsValidated = false;
@@ -356,5 +381,21 @@ namespace Flexicurve {
             }
 
         }
+
+        // Gets unique Object ID
+        private long GetLocalID(UnityEngine.Object obj) {
+            if (obj == null)
+                return 0;
+
+            PropertyInfo inspectorModeInfo = typeof(SerializedObject).GetProperty("inspectorMode", BindingFlags.NonPublic | BindingFlags.Instance);
+            SerializedObject serializedObject = new SerializedObject(obj);
+
+            // Устанавливаем режим "Debug" (чтобы получить внутренний ID)
+            inspectorModeInfo?.SetValue(serializedObject, InspectorMode.Debug, null);
+
+            SerializedProperty localIdProp = serializedObject.FindProperty("m_LocalIdentfierInFile");
+            return localIdProp != null ? localIdProp.longValue : 0;
+        }
+
     }
 }

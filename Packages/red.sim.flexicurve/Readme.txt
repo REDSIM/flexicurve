@@ -13,6 +13,8 @@ Patreon: https://www.patreon.com/red_sim
 UPDATE 1.1.3 (12.02.2025) Changes:
 - Inspector GUI improved
 - Poly-count info in inspector GUI
+- A new mesh file was created every time you relaunched the scene. Fixed now.
+- Random sags and parent fields didn't save data. Fixed now.
 
 UPDATE 1.1.2 (11.02.2025) Changes:
 - Code style and git page improved
@@ -29,7 +31,7 @@ UPDATE 1.1.0 (07.11.2024) Changes:
 -- changes made by UdonVR
 
 UPDATE 1.0.3 (08.12.2023) Changes:
-- Previous fix caused another bug, when a new mesh file was created every time you select a FlexiCurve object. Fixed now
+- Previous fix caused another bug, when a new mesh file was created every time you select a FlexiCurve object. Fixed now.
 
 UPDATE 1.0.2 (05.12.2023) Changes:
 - Duplication works correctly now. It now creates a new geometry file instead of referencing the old one after duplication.
