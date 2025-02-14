@@ -5,8 +5,6 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using Random = UnityEngine.Random;
-using UnityEditor.SearchService;
-using Object = UnityEngine.Object;
 
 namespace Flexicurve {
 
@@ -20,8 +18,6 @@ namespace Flexicurve {
         private int _sagGizmoID = 0;
         private bool _isGrab = false;
         private bool _isCtrlPressed = false;
-
-# region Used for AutoGenerate
 
         private string[] _tags;
 
@@ -98,8 +94,6 @@ namespace Flexicurve {
             garland.OnValidate();
             PrefabUtility.RecordPrefabInstancePropertyModifications(garland);
         }
-
-#endregion
 
         public override void OnInspectorGUI() {
 

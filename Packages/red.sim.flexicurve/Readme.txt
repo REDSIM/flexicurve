@@ -1,4 +1,4 @@
-FlexiCurve by RED_SIM v.1.1.3
+FlexiCurve by RED_SIM v.1.1.4
 GitHub: https://github.com/REDSIM/flexicurve/
 
 This is a free open source Asset Package.
@@ -9,6 +9,9 @@ If you have any problems or questions, be free to DM me on Discord: RED_SIM
 More info and instructions here: https://www.patreon.com/posts/94014721/
 
 Patreon: https://www.patreon.com/red_sim
+
+UPDATE 1.1.4 (14.02.2025) Changes:
+- There was a lag while saving a mesh after any edit. Especially noticable in large projects with TextMeshPro Text. Fixed now.
 
 UPDATE 1.1.3 (12.02.2025) Changes:
 - Inspector GUI improved

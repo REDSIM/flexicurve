@@ -374,7 +374,7 @@ namespace Flexicurve {
             if (!File.Exists(path)) AssetDatabase.CreateAsset(mesh, path);
 
             // Save the mesh asset
-            AssetDatabase.SaveAssets();
+            AssetDatabase.SaveAssetIfDirty(mesh);
 
         }
 #endif
